@@ -17,13 +17,6 @@ enum ActivePlatformFlag {
   AGENT_USAGE_BILLING
   ALLOW_REPLICA_METRICS
   ARCHIVER_V2_ROLLOUT
-  BUILDER_V3_FOR_CLI_DEPLOYS
-  BUILDER_V3_ROLLOUT_EXISTING_SERVICES
-  BUILDER_V3_ROLLOUT_EXISTING_SERVICES_PRO
-  BUILDER_V3_ROLLOUT_EXISTING_SERVICES_TRIAL
-  BUILDER_V3_ROLLOUT_NEW_SERVICES
-  BUILDER_V3_ROLLOUT_NEW_SERVICES_PRO
-  BUILDER_V3_ROLLOUT_NEW_SERVICES_TRIAL
   COMPARE_CLICKHOUSE_METRICS
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
@@ -33,6 +26,7 @@ enum ActivePlatformFlag {
   IN_DASHBOARD_SUPPORT
   KAFKA_DEPLOYMENT_STATUS_CHANGES
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
+  NEW_TEMPLATE_SEARCH_FLOW
   OAUTH_DCR_KILLSWITCH
   OAUTH_DEVICE_FLOW_KILLSWITCH
   RADAR_AUTO_EVALUATE
@@ -40,8 +34,6 @@ enum ActivePlatformFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  UNIFIED_SNAPSHOT_AND_BUILD
-  UNIFIED_SNAPSHOT_AND_BUILD_HOBBY
   UPDATED_VM_QUERIES
   USE_CLICKHOUSE_METRICS
   USE_GH_WEBHOOKS_FOR_CHANGE_DETECTION
@@ -57,7 +49,6 @@ enum ActiveServiceFeatureFlag {
   ENABLE_DOCKER_EXTENSION
   PLACEHOLDER
   SKIPPED_BUILDS
-  USE_BUILDER_V3_FOR_CLI_DEPLOYS
   USE_GH_WEBHOOKS_FOR_CHANGE_DETECTION
   USE_VM_RUNTIME
 }
@@ -2065,6 +2056,11 @@ type Mutation {
     """
     newServiceName: String
 
+    """
+    Caller-supplied source archive sub-prefix (e.g. `pgbackrest/cluster-<sysid>`). Provided by the multi-history picker when the user selects a specific cluster lifetime out of multiple sub-prefixes in the source bucket. Null falls through to the workflow's SSH probe of the live source's marker file, which always resolves to the current cluster's history.
+    """
+    sourceRepoPath: String
+
     """Point-in-time target. Must be within the available restore window."""
     targetTimestamp: DateTime!
 
@@ -2377,13 +2373,6 @@ enum PlatformFeatureFlag {
   AGENT_USAGE_BILLING
   ALLOW_REPLICA_METRICS
   ARCHIVER_V2_ROLLOUT
-  BUILDER_V3_FOR_CLI_DEPLOYS
-  BUILDER_V3_ROLLOUT_EXISTING_SERVICES
-  BUILDER_V3_ROLLOUT_EXISTING_SERVICES_PRO
-  BUILDER_V3_ROLLOUT_EXISTING_SERVICES_TRIAL
-  BUILDER_V3_ROLLOUT_NEW_SERVICES
-  BUILDER_V3_ROLLOUT_NEW_SERVICES_PRO
-  BUILDER_V3_ROLLOUT_NEW_SERVICES_TRIAL
   COMPARE_CLICKHOUSE_METRICS
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
@@ -2393,6 +2382,7 @@ enum PlatformFeatureFlag {
   IN_DASHBOARD_SUPPORT
   KAFKA_DEPLOYMENT_STATUS_CHANGES
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
+  NEW_TEMPLATE_SEARCH_FLOW
   OAUTH_DCR_KILLSWITCH
   OAUTH_DEVICE_FLOW_KILLSWITCH
   RADAR_AUTO_EVALUATE
@@ -2400,8 +2390,6 @@ enum PlatformFeatureFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  UNIFIED_SNAPSHOT_AND_BUILD
-  UNIFIED_SNAPSHOT_AND_BUILD_HOBBY
   UPDATED_VM_QUERIES
   USE_CLICKHOUSE_METRICS
   USE_GH_WEBHOOKS_FOR_CHANGE_DETECTION
@@ -3430,20 +3418,24 @@ type Query {
   Search published templates using the backend-ranked template search index.
   """
   templateSearch(
+    after: String
+    before: String
+
     """If set, only templates in this category will be returned."""
     category: String
+    first: Int
+    last: Int
 
-    """Maximum number of templates to return. Defaults to 20 and caps at 50."""
-    limit: Int
-
-    """Search term to filter templates."""
+    """
+    Search term to filter templates. Empty query returns browse-style results.
+    """
     query: String!
 
     """
     If set, only templates matching this verification state will be returned.
     """
     verified: Boolean
-  ): [TemplateSearchResult!]!
+  ): QueryTemplateSearchConnection!
 
   """Get the source template for a project."""
   templateSourceForProject(projectId: String!): Template
@@ -3739,6 +3731,16 @@ type QueryTeamTemplatesConnection {
 type QueryTeamTemplatesConnectionEdge {
   cursor: String!
   node: Template!
+}
+
+type QueryTemplateSearchConnection {
+  edges: [QueryTemplateSearchConnectionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type QueryTemplateSearchConnectionEdge {
+  cursor: String!
+  node: TemplateSearchResult!
 }
 
 type QueryTemplatesConnection {
