@@ -1357,6 +1357,13 @@ input LoginSessionAuthInput {
   hostname: String
 }
 
+type MaintainerWorkspace {
+  avatar: String
+  id: String!
+  name: String!
+  partnerProfile: PartnerProfile
+}
+
 type Maintenance {
   id: String!
   message: String!
@@ -4487,6 +4494,7 @@ type Template implements Node {
   isV2Template: Boolean!
   isVerified: Boolean!
   languages: [String!]
+  maintainer: MaintainerWorkspace
   metadata: TemplateMetadata! @deprecated(reason: "Deprecated in favor of listing the fields individually.")
   name: String!
   projects: Int!
@@ -4500,6 +4508,7 @@ type Template implements Node {
   tags: [String!]
   teamId: String @deprecated(reason: "Use workspaceId")
   totalPayout: Float!
+  updatedAt: DateTime!
   workspaceId: String
 }
 
