@@ -16,7 +16,6 @@ enum ActiveFeatureFlag {
 enum ActivePlatformFlag {
   AGENT_USAGE_BILLING
   ALLOW_REPLICA_METRICS
-  ARCHIVER_V2_ROLLOUT
   COMPARE_CLICKHOUSE_METRICS
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
@@ -293,15 +292,24 @@ enum CertificateStatusDetailed {
 }
 
 input CliEventTrackInput {
+  agentSessionId: String
   arch: String!
+  caller: String
   cliVersion: String!
   command: String!
   durationMs: Int!
+  environmentId: String
+  errorClass: String
   errorMessage: String
+  installRequestId: String
   isCi: Boolean!
   os: String!
+  projectId: String
+  serviceId: String
+  sessionId: String
   subCommand: String
   success: Boolean!
+  workspaceId: String
 }
 
 type CnameCheck {
@@ -1898,6 +1906,9 @@ type Mutation {
   """Deletes a session."""
   sessionDelete(id: String!): Boolean!
 
+  """Track setup agent lifecycle events from the Railway CLI"""
+  setupAgentEventTrack(input: SetupAgentEventTrackInput!): Boolean!
+
   """Configure a shared variable."""
   sharedVariableConfigure(input: SharedVariableConfigureInput!): Variable!
 
@@ -2379,7 +2390,6 @@ type PlanLimitOverride implements Node {
 enum PlatformFeatureFlag {
   AGENT_USAGE_BILLING
   ALLOW_REPLICA_METRICS
-  ARCHIVER_V2_ROLLOUT
   COMPARE_CLICKHOUSE_METRICS
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
@@ -4192,6 +4202,21 @@ enum SessionType {
   BROWSER
   CLI
   FORUMS
+}
+
+input SetupAgentEventTrackInput {
+  agentSessionId: String
+  arch: String
+  caller: String
+  cliVersion: String
+  configuredClients: [String!]
+  errorMessage: String
+  installRequestId: String
+  isCi: Boolean
+  os: String
+  phase: String!
+  sessionId: String
+  success: Boolean
 }
 
 input SharedVariableConfigureInput {
