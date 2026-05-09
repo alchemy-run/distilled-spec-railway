@@ -170,12 +170,6 @@
             "deprecationReason": null
           },
           {
-            "name": "NEW_TEMPLATE_SEARCH_FLOW",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "OAUTH_DCR_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
@@ -21976,12 +21970,6 @@
           },
           {
             "name": "NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "NEW_TEMPLATE_SEARCH_FLOW",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
