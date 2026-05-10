@@ -1702,31 +1702,6 @@ type Mutation {
   """Updates an existing plugin."""
   pluginUpdate(id: String!, input: PluginUpdateInput!): Plugin! @deprecated(reason: "Plugins are deprecated")
 
-  """
-  Inverse of postgresHaEnablePitrArchiving: clears archive_mode, archive_command, and archive_timeout from the cluster's Patroni DCS by PATCHing them to null (Patroni's removal semantics). Step 1 of the PITR disable flow. Without this, the disable flow's removal of WAL_ARCHIVE_* env vars from services would leave archive_mode=on with archive_command failing — Postgres would refuse to recycle WAL and disk would fill.
-  """
-  postgresHaDisablePitrArchiving(environmentId: String!, rootServiceId: String!): Boolean!
-
-  """
-  Push pgBackRest archive parameters into the cluster's Patroni DCS (equivalent to `patronictl edit-config`). Sets archive_mode=on, archive_command pointing at the postgres-ssl image's archive-push wrapper, archive_timeout=60. Nodes adopt these values on their next restart; this mutation does not trigger restarts. Step 1 of the PITR enable flow.
-  """
-  postgresHaEnablePitrArchiving(environmentId: String!, rootServiceId: String!): Boolean!
-
-  """
-  Trigger a Patroni switchover. Promotes `candidate` (or any healthy replica if omitted) to leader, demoting the current `leader`. Used by the PITR enable flow to redeploy the ex-primary safely after rolling new env vars onto the replicas.
-  """
-  postgresHaTriggerSwitchover(
-    """
-    Optional candidate Patroni member name. If omitted, Patroni picks any healthy replica.
-    """
-    candidate: String
-    environmentId: String!
-
-    """Current leader Patroni member name"""
-    leader: String!
-    rootServiceId: String!
-  ): Boolean!
-
   """Update the email preferences for a user"""
   preferencesUpdate(input: PreferencesUpdateData!): Preferences!
 
