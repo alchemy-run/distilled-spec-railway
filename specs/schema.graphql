@@ -5,6 +5,7 @@ type AccessRule {
 enum ActiveFeatureFlag {
   AUDIT_LOGS
   BUCKET_FILE_BROWSER
+  CHAT_SANDBOX
   DEBUG_SMART_DIAGNOSIS
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
@@ -16,6 +17,7 @@ enum ActiveFeatureFlag {
 enum ActivePlatformFlag {
   AGENT_USAGE_BILLING
   ALLOW_REPLICA_METRICS
+  BAN_APPEAL_FORM
   COMPARE_CLICKHOUSE_METRICS
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
@@ -958,6 +960,11 @@ type EstimatedUsage {
 
 type Event implements Node {
   action: String!
+
+  """
+  Minimal event payload for activity feed list rendering. Avoids returning large deployment payload fields like commit messages.
+  """
+  activityPayload: JSON
   createdAt: DateTime!
   environment: Environment
   environmentId: String
@@ -2365,6 +2372,7 @@ type PlanLimitOverride implements Node {
 enum PlatformFeatureFlag {
   AGENT_USAGE_BILLING
   ALLOW_REPLICA_METRICS
+  BAN_APPEAL_FORM
   COMPARE_CLICKHOUSE_METRICS
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
@@ -3261,6 +3269,9 @@ type Query {
 
   """Gets notification deliveries for the authenticated user"""
   notificationDeliveries(after: String, before: String, filter: NotificationDeliveryFilterInput, first: Int, last: Int): QueryNotificationDeliveriesConnection!
+
+  """Gets a notification delivery by ID for the authenticated user"""
+  notificationDelivery(id: String!): NotificationDelivery
 
   """Get all notification rules for a workspace and project"""
   notificationRules(projectId: String, workspaceId: String!): [NotificationRule!]!
