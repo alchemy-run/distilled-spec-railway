@@ -34,6 +34,7 @@ enum ActivePlatformFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  TEMPORAL_CLOUD_NOTIFICATIONS
   UPDATED_VM_QUERIES
   USE_CLICKHOUSE_METRICS
   USE_GH_WEBHOOKS_FOR_CHANGE_DETECTION
@@ -2389,6 +2390,7 @@ enum PlatformFeatureFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  TEMPORAL_CLOUD_NOTIFICATIONS
   UPDATED_VM_QUERIES
   USE_CLICKHOUSE_METRICS
   USE_GH_WEBHOOKS_FOR_CHANGE_DETECTION
@@ -5221,9 +5223,35 @@ input WorkspacePermissionChangeInput {
 }
 
 type WorkspacePolicy implements Node {
+  deploySourceAllowlist(after: String, before: String, first: Int, last: Int): WorkspacePolicyDeploySourceAllowlistConnection!
   id: ID!
+  restrictDeploysToAllowedSources: Boolean!
   restrictPublicTcpProxies: Boolean!
   restrictRailwayDomainGeneration: Boolean!
+}
+
+type WorkspacePolicyDeploySourceAllowlist implements Node {
+  addedBy: User
+  createdAt: DateTime!
+  id: ID!
+  sourceIcon: String
+  sourceId: String!
+  sourceName: String!
+  sourceType: WorkspacePolicyDeploySourceType!
+}
+
+type WorkspacePolicyDeploySourceAllowlistConnection {
+  edges: [WorkspacePolicyDeploySourceAllowlistConnectionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type WorkspacePolicyDeploySourceAllowlistConnectionEdge {
+  cursor: String!
+  node: WorkspacePolicyDeploySourceAllowlist!
+}
+
+enum WorkspacePolicyDeploySourceType {
+  GITHUB_ORG
 }
 
 input WorkspacePolicyItemUpdateInput {
@@ -5232,6 +5260,7 @@ input WorkspacePolicyItemUpdateInput {
 }
 
 enum WorkspacePolicyName {
+  RESTRICT_DEPLOYS_TO_ALLOWED_SOURCES
   RESTRICT_PUBLIC_TCP_PROXIES
   RESTRICT_RAILWAY_DOMAIN_GENERATION
 }
