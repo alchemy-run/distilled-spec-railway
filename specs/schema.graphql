@@ -2107,6 +2107,12 @@ type Mutation {
   """Changes a user workspace permissions."""
   workspacePermissionChange(input: WorkspacePermissionChangeInput!): Boolean!
 
+  """Add a deploy source to a workspace policy allowlist."""
+  workspacePolicyDeploySourceAllowlistAdd(sourceId: String!, sourceType: WorkspacePolicyDeploySourceType!, workspaceId: String!): WorkspacePolicyDeploySourceAllowlist!
+
+  """Remove a deploy source from a workspace policy allowlist."""
+  workspacePolicyDeploySourceAllowlistRemove(id: String!): Boolean!
+
   """Enable or disable a workspace policy. Enterprise workspaces only."""
   workspacePolicyItemUpdate(enabled: Boolean, input: WorkspacePolicyItemUpdateInput, policy: WorkspacePolicyName, workspaceId: String!): Boolean!
 
@@ -3544,6 +3550,9 @@ type Query {
 
   """Get the policies for a workspace"""
   workspacePolicy(workspaceId: String!): WorkspacePolicy
+
+  """List deploy sources that can be added to a workspace policy."""
+  workspacePolicySelectableDeploySources(sourceType: WorkspacePolicyDeploySourceType!, workspaceId: String!): [WorkspacePolicySelectableDeploySource!]!
 
   """Get all templates for a workspace."""
   workspaceTemplates(after: String, before: String, first: Int, last: Int, workspaceId: String!): QueryWorkspaceTemplatesConnection!
@@ -5265,6 +5274,13 @@ enum WorkspacePolicyName {
   RESTRICT_DEPLOYS_TO_ALLOWED_SOURCES
   RESTRICT_PUBLIC_TCP_PROXIES
   RESTRICT_RAILWAY_DOMAIN_GENERATION
+}
+
+type WorkspacePolicySelectableDeploySource {
+  sourceIcon: String
+  sourceId: String!
+  sourceName: String!
+  sourceType: WorkspacePolicyDeploySourceType!
 }
 
 type WorkspaceProjectsConnection {
