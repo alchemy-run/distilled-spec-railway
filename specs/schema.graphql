@@ -24,6 +24,7 @@ enum ActivePlatformFlag {
   DEMO_PERCENTAGE_ROLLOUT
   DISABLE_OAUTH_ACCESS_TOKENS
   FOCUSED_PR_ENVIRONMENTS
+  HA_STATIC_EGRESS_SELF_SERVICE
   INLINE_NOTIFICATION_PROCESSING
   IN_DASHBOARD_SUPPORT
   KAFKA_DEPLOYMENT_STATUS_CHANGES
@@ -1576,6 +1577,16 @@ type Mutation {
   egressGatewayAssociationsClear(input: EgressGatewayServiceTargetInput!): Boolean!
 
   """
+  Rollback from HA static IPs to legacy. Creates legacy association, clears HA, and redeploys.
+  """
+  egressGatewayRollbackFromHA(input: EgressGatewayServiceTargetInput!): [EgressGateway!]!
+
+  """
+  Upgrade static IPs from legacy to HA. Creates HA associations, clears legacy, and redeploys.
+  """
+  egressGatewayUpgradeToHA(input: EgressGatewayServiceTargetInput!): [EgressGateway!]!
+
+  """
   Change the User's account email if there is a valid change email request.
   """
   emailChangeConfirm(nonce: String!): Boolean!
@@ -2391,6 +2402,7 @@ enum PlatformFeatureFlag {
   DEMO_PERCENTAGE_ROLLOUT
   DISABLE_OAUTH_ACCESS_TOKENS
   FOCUSED_PR_ENVIRONMENTS
+  HA_STATIC_EGRESS_SELF_SERVICE
   INLINE_NOTIFICATION_PROCESSING
   IN_DASHBOARD_SUPPORT
   KAFKA_DEPLOYMENT_STATUS_CHANGES
@@ -3033,6 +3045,14 @@ type Query {
 
   """All domains for a service instance"""
   domains(environmentId: String!, projectId: String!, serviceId: String!): AllDomains!
+
+  """Preview HA static egress IPs that would be assigned without persisting"""
+  egressGatewayHAPreview(environmentId: String!, serviceId: String!): [EgressGateway!]!
+
+  """
+  Preview legacy static egress IP that would be assigned without persisting
+  """
+  egressGatewayLegacyPreview(environmentId: String!, serviceId: String!): [EgressGateway!]!
 
   """All egress gateways assigned to a service instance"""
   egressGateways(environmentId: String!, serviceId: String!): [EgressGateway!]!
