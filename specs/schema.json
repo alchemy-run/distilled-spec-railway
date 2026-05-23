@@ -45,12 +45,6 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "AUDIT_LOGS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "BUCKET_FILE_BROWSER",
             "description": null,
             "isDeprecated": false,
@@ -110,18 +104,6 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "AGENT_USAGE_BILLING",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ALLOW_REPLICA_METRICS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "BAN_APPEAL_FORM",
             "description": null,
             "isDeprecated": false,
@@ -134,12 +116,6 @@
             "deprecationReason": null
           },
           {
-            "name": "COMPARE_CLICKHOUSE_METRICS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "CTRD_IMAGE_STORE_ROLLOUT",
             "description": null,
             "isDeprecated": false,
@@ -147,18 +123,6 @@
           },
           {
             "name": "DEMO_PERCENTAGE_ROLLOUT",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "DISABLE_OAUTH_ACCESS_TOKENS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "FOCUSED_PR_ENVIRONMENTS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -195,12 +159,6 @@
           },
           {
             "name": "OAUTH_DCR_KILLSWITCH",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "OAUTH_DEVICE_FLOW_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -249,24 +207,6 @@
           },
           {
             "name": "UPDATED_VM_QUERIES",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "USE_CLICKHOUSE_METRICS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "USE_GH_WEBHOOKS_FOR_CHANGE_DETECTION",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "VM_TIME_RANGE_QUERY",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -325,12 +265,6 @@
           },
           {
             "name": "USE_EXPRESS_DEPLOY",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "USE_GH_WEBHOOKS_FOR_CHANGE_DETECTION",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -22007,18 +21941,6 @@
         "interfaces": null,
         "enumValues": [
           {
-            "name": "AGENT_USAGE_BILLING",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ALLOW_REPLICA_METRICS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "BAN_APPEAL_FORM",
             "description": null,
             "isDeprecated": false,
@@ -22031,12 +21953,6 @@
             "deprecationReason": null
           },
           {
-            "name": "COMPARE_CLICKHOUSE_METRICS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "CTRD_IMAGE_STORE_ROLLOUT",
             "description": null,
             "isDeprecated": false,
@@ -22044,18 +21960,6 @@
           },
           {
             "name": "DEMO_PERCENTAGE_ROLLOUT",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "DISABLE_OAUTH_ACCESS_TOKENS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "FOCUSED_PR_ENVIRONMENTS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -22092,12 +21996,6 @@
           },
           {
             "name": "OAUTH_DCR_KILLSWITCH",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "OAUTH_DEVICE_FLOW_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -22146,24 +22044,6 @@
           },
           {
             "name": "UPDATED_VM_QUERIES",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "USE_CLICKHOUSE_METRICS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "USE_GH_WEBHOOKS_FOR_CHANGE_DETECTION",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "VM_TIME_RANGE_QUERY",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
