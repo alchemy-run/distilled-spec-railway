@@ -6,6 +6,7 @@ enum ActiveFeatureFlag {
   BUCKET_FILE_BROWSER
   CHAT_SANDBOX
   DEBUG_SMART_DIAGNOSIS
+  EDGE_CONFIG
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
   POSTGRES_PGBOUNCER
@@ -372,7 +373,7 @@ enum CreditType {
 }
 
 type CustomDomain implements Domain {
-  cdnMode: String
+  cdnMode: String @deprecated(reason: "Removed; always null.")
   cnameCheck: CnameCheck! @deprecated(reason: "Use the `status` field instead.")
   createdAt: DateTime
   deletedAt: DateTime
@@ -741,6 +742,11 @@ input DeploymentTriggerUpdateInput {
   rootDirectory: String
 }
 
+input DisableServiceCdnInput {
+  environmentId: String!
+  serviceId: String!
+}
+
 scalar DisplayConfig
 
 type DockerComposeImport {
@@ -749,7 +755,7 @@ type DockerComposeImport {
 }
 
 interface Domain {
-  cdnMode: String
+  cdnMode: String @deprecated(reason: "Removed; always null.")
   createdAt: DateTime
   deletedAt: DateTime
   domain: String!
@@ -785,6 +791,30 @@ type DomainWithStatus {
   domain: Domain
 }
 
+type EdgeCachingConfig {
+  defaultTtlSeconds: Int!
+  htmlCaching: String!
+  mode: String!
+  staleWhileRevalidate: StaleWhileRevalidateConfig!
+}
+
+input EdgeCachingConfigInput {
+  defaultTtlSeconds: Int
+  htmlCaching: String
+  mode: String
+  staleWhileRevalidate: StaleWhileRevalidateInput
+}
+
+type EdgeConfig {
+  caching: EdgeCachingConfig
+  enabled: Boolean!
+  id: String!
+}
+
+input EdgeConfigInput {
+  caching: EdgeCachingConfigInput
+}
+
 type EgressGateway {
   ipv4: String!
   region: String!
@@ -798,6 +828,12 @@ input EgressGatewayCreateInput {
 }
 
 input EgressGatewayServiceTargetInput {
+  environmentId: String!
+  serviceId: String!
+}
+
+input EnableServiceCdnInput {
+  config: EdgeConfigInput
   environmentId: String!
   serviceId: String!
 }
@@ -1556,6 +1592,9 @@ type Mutation {
   """Updates a deployment trigger."""
   deploymentTriggerUpdate(id: String!, input: DeploymentTriggerUpdateInput!): DeploymentTrigger!
 
+  """Disables CDN for a service, soft-deleting the edge config."""
+  disableServiceCdn(input: DisableServiceCdnInput!): Boolean!
+
   """Create services and volumes from docker compose"""
   dockerComposeImport(environmentId: String!, projectId: String!, skipStagingPatch: Boolean, yaml: String!): DockerComposeImport!
 
@@ -1582,6 +1621,11 @@ type Mutation {
 
   """Initiate an email change request for a user"""
   emailChangeInitiate(newEmail: String!): Boolean!
+
+  """
+  Enables CDN for a service, creating an edge config and attaching all live domains.
+  """
+  enableServiceCdn(input: EnableServiceCdnInput!): EdgeConfig!
 
   """Creates a new environment."""
   environmentCreate(input: EnvironmentCreateInput!): Environment!
@@ -1960,6 +2004,9 @@ type Mutation {
 
   """Validates the token for a 2FA action or for a login request."""
   twoFactorInfoValidate(input: TwoFactorInfoValidateInput!): Boolean!
+
+  """Updates the edge config (caching settings) for a service."""
+  updateServiceEdgeConfig(input: UpdateServiceEdgeConfigInput!): EdgeConfig!
 
   """Generate a Slack channel for a workspace"""
   upsertSlackChannel(workspaceId: String!): Boolean!
@@ -4011,7 +4058,7 @@ type ServiceDeploymentsConnectionEdge {
 }
 
 type ServiceDomain implements Domain {
-  cdnMode: String
+  cdnMode: String @deprecated(reason: "Removed; always null.")
   createdAt: DateTime
   deletedAt: DateTime
   domain: String!
@@ -4069,6 +4116,7 @@ type ServiceInstance implements Node {
   dockerfilePath: String
   domains: AllDomains!
   drainingSeconds: Int
+  edgeConfig: EdgeConfig
   environmentId: String!
   healthcheckPath: String
   healthcheckTimeout: Int
@@ -4274,6 +4322,14 @@ input SshPublicKeyCreateInput {
   name: String!
   publicKey: String!
   workspaceId: String
+}
+
+type StaleWhileRevalidateConfig {
+  enabled: Boolean!
+}
+
+input StaleWhileRevalidateInput {
+  enabled: Boolean!
 }
 
 type Subscription {
@@ -4738,6 +4794,12 @@ input UpdateNotificationRuleInput {
   ephemeralEnvironments: Boolean
   eventTypes: [String!]
   severities: [NotificationSeverity!]
+}
+
+input UpdateServiceEdgeConfigInput {
+  config: EdgeConfigInput!
+  environmentId: String!
+  serviceId: String!
 }
 
 """The `Upload` scalar type represents a file upload."""
