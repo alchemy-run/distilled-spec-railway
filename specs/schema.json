@@ -97,6 +97,18 @@
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "PROJECT_SANDBOXES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SERVICE_SHELL",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -195,18 +207,6 @@
           },
           {
             "name": "STRIPE_METERS_SHADOW_ENABLED",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "TEMPORAL_CLOUD_GITHUB",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "TEMPORAL_CLOUD_NOTIFICATIONS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -14643,6 +14643,37 @@
             "deprecationReason": null
           },
           {
+            "name": "generateShellToken",
+            "description": "Mints a 5-minute JWT for opening a browser WS session against tcp-proxy.",
+            "args": [
+              {
+                "name": "input",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "ShellTokenInput",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "githubRepoDeploy",
             "description": "Deploys a GitHub repo",
             "args": [
@@ -22415,18 +22446,6 @@
           },
           {
             "name": "STRIPE_METERS_SHADOW_ENABLED",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "TEMPORAL_CLOUD_GITHUB",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "TEMPORAL_CLOUD_NOTIFICATIONS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -39920,6 +39939,73 @@
           },
           {
             "name": "projectId",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "ShellTokenInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "environmentId",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "instanceId",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "scope",
+            "description": null,
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "serviceId",
             "description": null,
             "type": {
               "kind": "NON_NULL",

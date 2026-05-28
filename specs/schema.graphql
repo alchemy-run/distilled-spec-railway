@@ -12,6 +12,8 @@ enum ActiveFeatureFlag {
   POSTGRES_PGBOUNCER
   POSTGRES_PITR
   PRIORITY_BOARDING
+  PROJECT_SANDBOXES
+  SERVICE_SHELL
 }
 
 enum ActivePlatformFlag {
@@ -30,8 +32,6 @@ enum ActivePlatformFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  TEMPORAL_CLOUD_GITHUB
-  TEMPORAL_CLOUD_NOTIFICATIONS
   UPDATED_VM_QUERIES
 }
 
@@ -1674,6 +1674,11 @@ type Mutation {
   """Remove a feature flag for a user"""
   featureFlagRemove(input: FeatureFlagToggleInput!): Boolean!
 
+  """
+  Mints a 5-minute JWT for opening a browser WS session against tcp-proxy.
+  """
+  generateShellToken(input: ShellTokenInput!): String!
+
   """Deploys a GitHub repo"""
   githubRepoDeploy(input: GitHubRepoDeployInput!): String!
 
@@ -2444,8 +2449,6 @@ enum PlatformFeatureFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  TEMPORAL_CLOUD_GITHUB
-  TEMPORAL_CLOUD_NOTIFICATIONS
   UPDATED_VM_QUERIES
 }
 
@@ -4276,6 +4279,13 @@ input SharedVariableConfigureInput {
   environmentId: String!
   name: String!
   projectId: String!
+}
+
+input ShellTokenInput {
+  environmentId: String!
+  instanceId: String!
+  scope: String!
+  serviceId: String!
 }
 
 type SimilarTemplate {
