@@ -3,7 +3,6 @@ type AccessRule {
 }
 
 enum ActiveFeatureFlag {
-  BUCKET_FILE_BROWSER
   CHAT_SANDBOX
   DEBUG_SMART_DIAGNOSIS
   EDGE_CONFIG
@@ -795,6 +794,7 @@ type EdgeCachingConfig {
   defaultTtlSeconds: Int!
   htmlCaching: String!
   mode: String!
+  purgeOnDeploy: PurgeOnDeploy!
   staleWhileRevalidate: StaleWhileRevalidateConfig!
 }
 
@@ -802,6 +802,7 @@ input EdgeCachingConfigInput {
   defaultTtlSeconds: Int
   htmlCaching: String
   mode: String
+  purgeOnDeploy: PurgeOnDeploy
   staleWhileRevalidate: StaleWhileRevalidateInput
 }
 
@@ -809,6 +810,8 @@ type EdgeConfig {
   caching: EdgeCachingConfig
   enabled: Boolean!
   id: String!
+  purgeEpoch: Int!
+  purgeEpochByKind: JSON!
 }
 
 input EdgeConfigInput {
@@ -1861,6 +1864,11 @@ type Mutation {
 
   """Deletes a ProviderAuth."""
   providerAuthRemove(id: String!): Boolean!
+
+  """
+  Purges the CDN cache for a service. Bumps the edge config's purge epoch so every edge node treats prior cached entries as stale on next request. Idempotent; returns true even if CDN is disabled for the service.
+  """
+  purgeServiceCache(input: PurgeServiceCacheInput!): Boolean!
 
   """Generates a new set of recovery codes for the authenticated user."""
   recoveryCodeGenerate: RecoveryCodes!
@@ -2971,6 +2979,23 @@ type PublicStats {
   totalRequestsLastMonth: BigInt!
   totalServices: Int!
   totalUsers: Int!
+}
+
+enum PurgeCacheScope {
+  ALL
+  HTML
+}
+
+enum PurgeOnDeploy {
+  ALL
+  HTML
+  OFF
+}
+
+input PurgeServiceCacheInput {
+  environmentId: String!
+  scope: PurgeCacheScope!
+  serviceId: String!
 }
 
 type Query {
