@@ -4309,8 +4309,9 @@ input SharedVariableConfigureInput {
 input ShellTokenInput {
   environmentId: String!
   instanceId: String!
+  kind: String
   scope: String!
-  serviceId: String!
+  serviceId: String
 }
 
 type SimilarTemplate {
