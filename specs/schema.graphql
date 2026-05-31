@@ -1879,6 +1879,21 @@ type Mutation {
   """Updates the ReferralInfo for the authenticated user."""
   referralInfoUpdate(input: ReferralInfoUpdateInput!): ReferralInfo!
 
+  """Create a sandbox in an environment."""
+  sandboxCreate(input: SandboxCreateInput!): Sandbox!
+
+  """Destroy a sandbox."""
+  sandboxDestroy(environmentId: String!, id: String!): Sandbox
+
+  """Execute a command inside a running sandbox."""
+  sandboxExec(command: String!, environmentId: String!, id: String!, timeoutSec: Int): SandboxExecResult!
+
+  """Extend a sandbox's lifetime."""
+  sandboxHeartbeat(environmentId: String!, id: String!): Sandbox
+
+  """Build a sandbox template."""
+  sandboxTemplateBuild(environmentId: String!, input: SandboxTemplateInput!): SandboxTemplate!
+
   """Connect a service to a source"""
   serviceConnect(id: String!, input: ServiceConnectInput!): Service!
 
@@ -2838,6 +2853,7 @@ type ProjectResourceAccess {
   deployment: AccessRule!
   environment: AccessRule!
   plugin: AccessRule! @deprecated(reason: "Plugins have been removed")
+  sandbox: AccessRule!
 }
 
 enum ProjectRole {
@@ -3456,6 +3472,15 @@ type Query {
   """Get resource access for the current user or workspace"""
   resourceAccess(explicitResourceOwner: ExplicitOwnerInput!): ResourceAccess!
 
+  """Get a sandbox by id."""
+  sandbox(environmentId: String!, id: String!): Sandbox
+
+  """Get the status of a sandbox template."""
+  sandboxTemplate(environmentId: String!, id: ID!): SandboxTemplate!
+
+  """List sandboxes in an environment."""
+  sandboxes(after: String, before: String, environmentId: String!, first: Int, last: Int): QuerySandboxesConnection!
+
   """Get a service by ID"""
   service(id: String!): Service!
 
@@ -3798,6 +3823,16 @@ type QueryProjectsConnectionEdge {
   node: Project!
 }
 
+type QuerySandboxesConnection {
+  edges: [QuerySandboxesConnectionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type QuerySandboxesConnectionEdge {
+  cursor: String!
+  node: Sandbox!
+}
+
 type QuerySessionsConnection {
   edges: [QuerySessionsConnectionEdge!]!
   pageInfo: PageInfo!
@@ -4006,6 +4041,55 @@ enum RestartPolicyType {
   ALWAYS
   NEVER
   ON_FAILURE
+}
+
+type Sandbox {
+  createdAt: DateTime!
+  environmentId: String!
+  id: ID!
+  idleTimeoutMinutes: Int
+  region: String!
+  status: SandboxStatus!
+}
+
+input SandboxCreateInput {
+  environmentId: String!
+  idleTimeoutMinutes: Int
+  template: SandboxTemplateInput
+}
+
+type SandboxExecResult {
+  exitCode: Int!
+  stderr: String!
+  stdout: String!
+  timedOut: Boolean!
+  truncated: Boolean!
+}
+
+enum SandboxStatus {
+  CREATING
+  DESTROYED
+  DESTROYING
+  FAILED
+  RUNNING
+}
+
+type SandboxTemplate {
+  environmentId: String!
+  id: ID!
+  status: SandboxTemplateStatus!
+}
+
+input SandboxTemplateInput {
+  baseImageDigest: String
+  instructions: [String!]!
+}
+
+enum SandboxTemplateStatus {
+  BUILDING
+  FAILED
+  PENDING
+  READY
 }
 
 "\nSerializedTemplateConfig is a custom scalar type that represents the serializedConfig for a template.\nJSON Schema: https://backboard.railway.com/schema/template.schema.json\n"
