@@ -287,6 +287,29 @@ enum CertificateStatusDetailed {
   UNRECOGNIZED
 }
 
+type ChangeOperationResult {
+  kind: String!
+  outputs: JSON
+  path: String
+  status: String!
+  summary: String
+}
+
+type ChangeSetApplyResult {
+  changes: [ChangeOperationResult!]!
+  deploymentId: String
+  diagnostics: JSON!
+  id: String!
+  stagedPatchId: String
+  status: String!
+}
+
+type ChangeSetPreview {
+  changeSet: JSON!
+  diagnostics: JSON!
+  effects: JSON!
+}
+
 input CliEventTrackInput {
   agentSessionId: String
   arch: String!
@@ -1630,6 +1653,11 @@ type Mutation {
   """
   enableServiceCdn(input: EnableServiceCdnInput!): EdgeConfig!
 
+  """
+  Experimental: applies an intent-level RailwayChangeSet and returns operation results.
+  """
+  environmentApplyChangeSet(commitMessage: String, environmentId: String!, input: JSON!): ChangeSetApplyResult!
+
   """Creates a new environment."""
   environmentCreate(input: EnvironmentCreateInput!): Environment!
 
@@ -1647,6 +1675,11 @@ type Mutation {
     """Skip deploys for services affected by this patch."""
     skipDeploys: Boolean
   ): String!
+
+  """
+  Experimental: previews an intent-level RailwayChangeSet without side effects.
+  """
+  environmentPreviewChangeSet(environmentId: String!, input: JSON!): ChangeSetPreview!
 
   """Renames an environment."""
   environmentRename(id: String!, input: EnvironmentRenameInput!): Environment!
