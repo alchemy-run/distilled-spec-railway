@@ -12,7 +12,6 @@ enum ActiveFeatureFlag {
   POSTGRES_PITR
   PRIORITY_BOARDING
   PROJECT_SANDBOXES
-  SERVICE_SHELL
 }
 
 enum ActivePlatformFlag {
