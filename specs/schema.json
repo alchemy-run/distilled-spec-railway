@@ -97,6 +97,12 @@
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "TCPIP_DATABASE_CLIENT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -195,6 +201,12 @@
           },
           {
             "name": "STRIPE_METERS_SHADOW_ENABLED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TCPIP_DATABASE_CLIENT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -23100,6 +23112,12 @@
             "deprecationReason": null
           },
           {
+            "name": "TCPIP_DATABASE_CLIENT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "UPDATED_VM_QUERIES",
             "description": null,
             "isDeprecated": false,
@@ -38212,6 +38230,22 @@
             "deprecationReason": null
           },
           {
+            "name": "networkIsolation",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "SandboxNetworkIsolation",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "region",
             "description": null,
             "args": [],
@@ -38275,6 +38309,26 @@
             "type": {
               "kind": "SCALAR",
               "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "networkIsolation",
+            "description": "Network access for the sandbox. Defaults to ISOLATED (no private network access).",
+            "type": {
+              "kind": "ENUM",
+              "name": "SandboxNetworkIsolation",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "sourceSandboxId",
+            "description": "Fork an existing running sandbox in this environment. Mutually exclusive with template.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
               "ofType": null
             },
             "defaultValue": null
@@ -38383,6 +38437,29 @@
         "inputFields": null,
         "interfaces": [],
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "SandboxNetworkIsolation",
+        "description": "Controls a sandbox's access to the environment's private network.",
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "ISOLATED",
+            "description": "Peer-isolated with public NAT egress only; no access to the environment's private network. Default.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "PRIVATE",
+            "description": "Joins the environment's private network.",
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -48507,6 +48584,18 @@
             "deprecationReason": null
           },
           {
+            "name": "deletedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "environment",
             "description": null,
             "args": [],
@@ -48560,6 +48649,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "isPendingDeletion",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
                 "ofType": null
               }
             },

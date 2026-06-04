@@ -12,6 +12,7 @@ enum ActiveFeatureFlag {
   POSTGRES_PITR
   PRIORITY_BOARDING
   PROJECT_SANDBOXES
+  TCPIP_DATABASE_CLIENT
 }
 
 enum ActivePlatformFlag {
@@ -30,6 +31,7 @@ enum ActivePlatformFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  TCPIP_DATABASE_CLIENT
   UPDATED_VM_QUERIES
 }
 
@@ -2504,6 +2506,7 @@ enum PlatformFeatureFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  TCPIP_DATABASE_CLIENT
   UPDATED_VM_QUERIES
 }
 
@@ -4080,6 +4083,7 @@ type Sandbox {
   environmentId: String!
   id: ID!
   idleTimeoutMinutes: Int
+  networkIsolation: SandboxNetworkIsolation!
   region: String!
   status: SandboxStatus!
 }
@@ -4087,6 +4091,16 @@ type Sandbox {
 input SandboxCreateInput {
   environmentId: String!
   idleTimeoutMinutes: Int
+
+  """
+  Network access for the sandbox. Defaults to ISOLATED (no private network access).
+  """
+  networkIsolation: SandboxNetworkIsolation
+
+  """
+  Fork an existing running sandbox in this environment. Mutually exclusive with template.
+  """
+  sourceSandboxId: String
   template: SandboxTemplateInput
 }
 
@@ -4096,6 +4110,17 @@ type SandboxExecResult {
   stdout: String!
   timedOut: Boolean!
   truncated: Boolean!
+}
+
+"""Controls a sandbox's access to the environment's private network."""
+enum SandboxNetworkIsolation {
+  """
+  Peer-isolated with public NAT egress only; no access to the environment's private network. Default.
+  """
+  ISOLATED
+
+  """Joins the environment's private network."""
+  PRIVATE
 }
 
 enum SandboxStatus {
@@ -5189,10 +5214,12 @@ input VolumeCreateInput {
 type VolumeInstance implements Node {
   createdAt: DateTime!
   currentSizeMB: Float!
+  deletedAt: DateTime
   environment: Environment!
   environmentId: String!
   externalId: String
   id: ID!
+  isPendingDeletion: Boolean!
   mountPath: String!
   region: String
   service: Service!
