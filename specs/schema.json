@@ -57,12 +57,6 @@
             "deprecationReason": null
           },
           {
-            "name": "EDGE_CONFIG",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "IN_DASHBOARD_SUPPORT",
             "description": null,
             "isDeprecated": false,
@@ -38342,6 +38336,16 @@
               "ofType": null
             },
             "defaultValue": null
+          },
+          {
+            "name": "variables",
+            "description": "Environment variables baked into the sandbox, available to every command. Values may contain Railway variable references (e.g. ${{shared.FOO}}, ${{ServiceName.BAR}}), resolved at create time.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "EnvironmentVariables",
+              "ofType": null
+            },
+            "defaultValue": null
           }
         ],
         "interfaces": null,
@@ -38597,6 +38601,16 @@
                   }
                 }
               }
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "variables",
+            "description": "Environment variables available to the template's build instructions. Values may contain Railway variable references (e.g. ${{shared.FOO}}, ${{ServiceName.BAR}}), resolved at build time.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "EnvironmentVariables",
+              "ofType": null
             },
             "defaultValue": null
           }
@@ -41511,6 +41525,16 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "port",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
               "ofType": null
             },
             "defaultValue": null

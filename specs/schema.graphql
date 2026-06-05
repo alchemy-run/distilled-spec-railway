@@ -5,7 +5,6 @@ type AccessRule {
 enum ActiveFeatureFlag {
   CHAT_SANDBOX
   DEBUG_SMART_DIAGNOSIS
-  EDGE_CONFIG
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
   POSTGRES_PGBOUNCER
@@ -4102,6 +4101,11 @@ input SandboxCreateInput {
   """
   sourceSandboxId: String
   template: SandboxTemplateInput
+
+  """
+  Environment variables baked into the sandbox, available to every command. Values may contain Railway variable references (e.g. ${{shared.FOO}}, ${{ServiceName.BAR}}), resolved at create time.
+  """
+  variables: EnvironmentVariables
 }
 
 type SandboxExecResult {
@@ -4140,6 +4144,11 @@ type SandboxTemplate {
 input SandboxTemplateInput {
   baseImageDigest: String
   instructions: [String!]!
+
+  """
+  Environment variables available to the template's build instructions. Values may contain Railway variable references (e.g. ${{shared.FOO}}, ${{ServiceName.BAR}}), resolved at build time.
+  """
+  variables: EnvironmentVariables
 }
 
 enum SandboxTemplateStatus {
@@ -4451,6 +4460,7 @@ input ShellTokenInput {
   environmentId: String!
   instanceId: String!
   kind: String
+  port: Int
   scope: String!
   serviceId: String
 }
