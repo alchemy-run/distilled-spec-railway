@@ -15,6 +15,7 @@ enum ActiveFeatureFlag {
 }
 
 enum ActivePlatformFlag {
+  ALERT_SUS_USERS_CRON_KILLSWITCH
   BAN_APPEAL_FORM
   CHAT_SANDBOX
   CTRD_IMAGE_STORE_ROLLOUT
@@ -323,6 +324,7 @@ input CliAuthEventTrackInput {
   sessionId: String
   success: Boolean!
   transport: String!
+  transportReason: String
 }
 
 input CliEventTrackInput {
@@ -869,8 +871,22 @@ input EgressGatewayCreateInput {
 }
 
 input EgressGatewayServiceTargetInput {
+  allEnvironments: Boolean
   environmentId: String!
   serviceId: String!
+}
+
+type EgressMigrationEnvironmentResult {
+  environmentId: String!
+  environmentName: String!
+  error: String
+  gateways: [EgressGateway!]!
+  success: Boolean!
+}
+
+type EgressMigrationResult {
+  environments: [EgressMigrationEnvironmentResult!]!
+  ips: [EgressGateway!]!
 }
 
 input EnableServiceCdnInput {
@@ -1154,6 +1170,11 @@ type GitHubPRInfo {
   mergeable: Boolean
   state: String!
   title: String!
+}
+
+type GitHubPRInfoResult {
+  error: String
+  prInfo: GitHubPRInfo
 }
 
 type GitHubRepo {
@@ -1649,12 +1670,17 @@ type Mutation {
   egressGatewayAssociationsClear(input: EgressGatewayServiceTargetInput!): Boolean!
 
   """
-  Rollback from HA static IPs to legacy. Creates legacy association, clears HA, and redeploys.
+  Preview the HA static egress IPs that would be assigned, without applying them. Set allEnvironments to cover all of the service's environments.
+  """
+  egressGatewayHAMigrationPreview(input: EgressGatewayServiceTargetInput!): EgressMigrationResult!
+
+  """
+  Switch a service from HA static egress IPs back to a standard static IP. Set allEnvironments to apply to all of the service's environments.
   """
   egressGatewayRollbackFromHA(input: EgressGatewayServiceTargetInput!): [EgressGateway!]!
 
   """
-  Upgrade static IPs from legacy to HA. Creates HA associations, clears legacy, and redeploys.
+  Enable HA static egress IPs for a service. Set allEnvironments to apply to all of the service's environments.
   """
   egressGatewayUpgradeToHA(input: EgressGatewayServiceTargetInput!): [EgressGateway!]!
 
@@ -2508,6 +2534,7 @@ type PlanLimitOverride implements Node {
 }
 
 enum PlatformFeatureFlag {
+  ALERT_SUS_USERS_CRON_KILLSWITCH
   BAN_APPEAL_FORM
   CHAT_SANDBOX
   CTRD_IMAGE_STORE_ROLLOUT
@@ -3255,6 +3282,9 @@ type Query {
 
   """Get info for a GitHub pull request"""
   githubPRInfo(prNumber: Int!, serviceId: String!): GitHubPRInfo
+
+  """Get info for a GitHub pull request, including fetch errors"""
+  githubPRInfoResult(prNumber: Int!, serviceId: String!): GitHubPRInfoResult!
 
   """Checks if user has access to GitHub repository"""
   githubRepo(fullRepoName: String!): GitHubRepoWithoutInstallation!
