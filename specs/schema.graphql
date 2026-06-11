@@ -5,11 +5,9 @@ type AccessRule {
 enum ActiveFeatureFlag {
   CHAT_SANDBOX
   DEBUG_SMART_DIAGNOSIS
-  DISABLE_TCPIP_DATABASE_CLIENT
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
   POSTGRES_PGBOUNCER
-  POSTGRES_PITR
   PRIORITY_BOARDING
   PROJECT_SANDBOXES
 }
@@ -29,9 +27,9 @@ enum ActivePlatformFlag {
   RADAR_AUTO_EVALUATE
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
+  STRIPE_INVOICE_CREATED_WORKFLOW_V3
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  TCPIP_DATABASE_CLIENT
   UPDATED_VM_QUERIES
 }
 
@@ -2098,6 +2096,9 @@ type Mutation {
   """Retrigger verification for a failed trusted domain"""
   trustedDomainRetriggerVerification(id: String!): TrustedDomain
 
+  """Update the role of a trusted domain"""
+  trustedDomainUpdate(input: WorkspaceTrustedDomainUpdateInput!): TrustedDomain!
+
   """Setup 2FA authorization for authenticated user."""
   twoFactorInfoCreate(input: TwoFactorInfoCreateInput!): RecoveryCodes!
 
@@ -2548,9 +2549,9 @@ enum PlatformFeatureFlag {
   RADAR_AUTO_EVALUATE
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
+  STRIPE_INVOICE_CREATED_WORKFLOW_V3
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  TCPIP_DATABASE_CLIENT
   UPDATED_VM_QUERIES
 }
 
@@ -5651,6 +5652,11 @@ input WorkspaceTrustedDomainCreateInput {
   domainName: String!
   role: String!
   workspaceId: String!
+}
+
+input WorkspaceTrustedDomainUpdateInput {
+  id: String!
+  role: String!
 }
 
 input WorkspaceUpdateInput {
