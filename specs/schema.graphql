@@ -27,7 +27,6 @@ enum ActivePlatformFlag {
   RADAR_AUTO_EVALUATE
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
-  STRIPE_INVOICE_CREATED_WORKFLOW_V3
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
@@ -850,6 +849,7 @@ type EdgeConfig {
   id: String!
   purgeEpoch: Int!
   purgeEpochByKind: JSON!
+  underAttackModeUntil: Int
 }
 
 input EdgeConfigInput {
@@ -1954,6 +1954,17 @@ type Mutation {
   """Updates the ReferralInfo for the authenticated user."""
   referralInfoUpdate(input: ReferralInfoUpdateInput!): ReferralInfo!
 
+  """
+  Capture a running sandbox's current disk into a reusable, named checkpoint. Synchronous: the checkpoint is ready when this returns.
+  """
+  sandboxCheckpointCreate(environmentId: String!, name: String!, sandboxId: String!): SandboxCheckpoint!
+
+  """Delete a sandbox checkpoint."""
+  sandboxCheckpointDelete(environmentId: String!, id: ID!): Boolean!
+
+  """Rename a sandbox checkpoint."""
+  sandboxCheckpointRename(environmentId: String!, id: ID!, name: String!): SandboxCheckpoint!
+
   """Create a sandbox in an environment."""
   sandboxCreate(input: SandboxCreateInput!): Sandbox!
 
@@ -1966,8 +1977,8 @@ type Mutation {
   """Extend a sandbox's lifetime."""
   sandboxHeartbeat(environmentId: String!, id: String!): Sandbox
 
-  """Build a sandbox template."""
-  sandboxTemplateBuild(environmentId: String!, input: SandboxTemplateInput!): SandboxTemplate!
+  """Build a sandbox template into a bootable checkpoint."""
+  sandboxTemplateBuild(environmentId: String!, input: SandboxTemplateInput!): SandboxTemplateBuild!
 
   """Connect a service to a source"""
   serviceConnect(id: String!, input: ServiceConnectInput!): Service!
@@ -2040,6 +2051,11 @@ type Mutation {
 
   """Deletes a session."""
   sessionDelete(id: String!): Boolean!
+
+  """
+  Enables or disables Under Attack Mode for a service. While enabled, the edge serves a browser challenge to unverified visitors of the service's edge-routed domains; non-browser clients (APIs, webhooks) without a clearance cookie are rejected with a 429. Optionally time-boxed via durationSeconds, after which the mode disarms automatically.
+  """
+  setServiceUnderAttackMode(input: SetServiceUnderAttackModeInput!): EdgeConfig!
 
   """Track setup agent lifecycle events from the Railway CLI"""
   setupAgentEventTrack(input: SetupAgentEventTrackInput!): Boolean!
@@ -2549,7 +2565,6 @@ enum PlatformFeatureFlag {
   RADAR_AUTO_EVALUATE
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
-  STRIPE_INVOICE_CREATED_WORKFLOW_V3
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
@@ -2940,6 +2955,16 @@ enum ProjectRole {
   ADMIN
   MEMBER
   VIEWER
+}
+
+type ProjectServiceUsagePage {
+  pageInfo: ProjectServiceUsagePageInfo!
+  usage: [AggregatedUsage!]!
+}
+
+type ProjectServiceUsagePageInfo {
+  endCursor: String
+  hasNextPage: Boolean!
 }
 
 type ProjectServicesConnection {
@@ -3526,6 +3551,22 @@ type Query {
   """Get resource access rules for project-specific actions"""
   projectResourceAccess(projectId: String!): ProjectResourceAccess!
 
+  """Get paginated usage grouped by project and service for a workspace."""
+  projectServiceUsage(
+    """Project ID cursor returned from the previous page."""
+    after: String
+    endDate: DateTime!
+
+    """Number of projects to include in this page. Max 50."""
+    first: Int
+
+    """Whether to include deleted projects in usage."""
+    includeDeleted: Boolean
+    measurements: [MetricMeasurement!]!
+    startDate: DateTime!
+    workspaceId: String!
+  ): ProjectServiceUsagePage!
+
   """Get a single project token by the value in the header"""
   projectToken: ProjectToken!
 
@@ -3558,13 +3599,18 @@ type Query {
   """Get a sandbox by id."""
   sandbox(environmentId: String!, id: String!): Sandbox
 
+  """List named sandbox checkpoints in an environment."""
+  sandboxCheckpoints(environmentId: String!): [SandboxCheckpoint!]!
+
   """
   Resumable sessions inside a sandbox — interactive shells and one-off exec commands, live or recently exited. Null when the sandbox can't report them (e.g. its vm-init predates session listing).
   """
   sandboxSessions(after: String, before: String, environmentId: String!, first: Int, id: String!, last: Int): QuerySandboxSessionsConnection
 
-  """Get the status of a sandbox template."""
-  sandboxTemplate(environmentId: String!, id: ID!): SandboxTemplate!
+  """
+  Get a template's build state by id (the recipe content hash). READY once its checkpoint exists; BUILDING/FAILED reflect the build workflow.
+  """
+  sandboxTemplateBuild(environmentId: String!, id: ID!): SandboxTemplateBuild!
 
   """List sandboxes in an environment."""
   sandboxes(after: String, before: String, environmentId: String!, first: Int, last: Int): QuerySandboxesConnection!
@@ -4151,6 +4197,20 @@ type Sandbox {
   status: SandboxStatus!
 }
 
+"""
+A bootable snapshot of a sandbox's disk, scoped to an environment. Built from a template recipe or captured from a running sandbox.
+"""
+type SandboxCheckpoint {
+  createdAt: DateTime!
+  environmentId: String!
+  id: ID!
+
+  """
+  The checkpoint's identity within the environment (same as id): a recipe content hash for a built template, or the user-given name for one captured from a sandbox.
+  """
+  key: String!
+}
+
 input SandboxCreateInput {
   environmentId: String!
   idleTimeoutMinutes: Int
@@ -4234,27 +4294,41 @@ enum SandboxStatus {
   RUNNING
 }
 
-type SandboxTemplate {
+"""
+The state of a template build, derived from its workflow and the existence of its checkpoint. READY means the checkpoint exists and can be booted.
+"""
+type SandboxTemplateBuild {
   environmentId: String!
+
+  """The template's resolved-content hash."""
   id: ID!
-  status: SandboxTemplateStatus!
+  status: SandboxTemplateBuildStatus!
+}
+
+enum SandboxTemplateBuildStatus {
+  BUILDING
+  FAILED
+  PENDING
+  READY
 }
 
 input SandboxTemplateInput {
   baseImageDigest: String
-  instructions: [String!]!
+
+  """
+  Build a template by running these shell instructions on the base image. Mutually exclusive with name.
+  """
+  instructions: [String!]
+
+  """
+  Boot from a saved checkpoint with this name (one captured from a sandbox). Mutually exclusive with instructions.
+  """
+  name: String
 
   """
   Environment variables available to the template's build instructions. Values may contain Railway variable references (e.g. ${{shared.FOO}}, ${{ServiceName.BAR}}), resolved at build time.
   """
   variables: EnvironmentVariables
-}
-
-enum SandboxTemplateStatus {
-  BUILDING
-  FAILED
-  PENDING
-  READY
 }
 
 "\nSerializedTemplateConfig is a custom scalar type that represents the serializedConfig for a template.\nJSON Schema: https://backboard.railway.com/schema/template.schema.json\n"
@@ -4530,6 +4604,13 @@ enum SessionType {
   BROWSER
   CLI
   FORUMS
+}
+
+input SetServiceUnderAttackModeInput {
+  durationSeconds: Int
+  enabled: Boolean!
+  environmentId: String!
+  serviceId: String!
 }
 
 input SetupAgentEventTrackInput {
