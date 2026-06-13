@@ -181,6 +181,7 @@ type BillingPeriod {
 
 type Bucket implements Node {
   createdAt: DateTime!
+  groupId: String
   id: ID!
   name: String!
   project: Project!
@@ -1213,6 +1214,17 @@ type GitHubSshKey {
   id: Int!
   key: String!
   title: String!
+}
+
+type Group implements Node {
+  color: String
+  groupId: String
+  icon: String
+  id: ID!
+  isCollapsed: Boolean
+  name: String
+  project: Project!
+  projectId: String!
 }
 
 type HerokuApp {
@@ -2849,6 +2861,7 @@ type ProjectGroupsConnection {
 
 type ProjectGroupsConnectionEdge {
   cursor: String!
+  node: Group!
 }
 
 type ProjectInvitation {
@@ -4339,6 +4352,7 @@ type Service implements Node {
   deletedAt: DateTime
   deployments(after: String, before: String, first: Int, last: Int): ServiceDeploymentsConnection! @deprecated(reason: "Use environment.deployments for properly scoped access control")
   featureFlags: [ActiveServiceFeatureFlag!]!
+  groupId: String
 
   """
   Whether this service has hidden registry credentials from a template. When true, the credentials are stored in the template and used during deployment.
