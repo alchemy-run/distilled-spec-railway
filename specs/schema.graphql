@@ -4360,6 +4360,9 @@ type Service implements Node {
   hasHiddenRegistryCredentialsFromTemplate: Boolean!
   icon: String
   id: ID!
+
+  """Whether this service currently has an active restriction."""
+  isRestricted: Boolean!
   name: String!
   project: Project!
   projectId: String!

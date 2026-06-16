@@ -40354,6 +40354,22 @@
             "deprecationReason": null
           },
           {
+            "name": "isRestricted",
+            "description": "Whether this service currently has an active restriction.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "name",
             "description": null,
             "args": [],
