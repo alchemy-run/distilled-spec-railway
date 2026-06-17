@@ -116,6 +116,12 @@
             "deprecationReason": null
           },
           {
+            "name": "CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CTRD_IMAGE_STORE_ROLLOUT",
             "description": null,
             "isDeprecated": false,
@@ -123,12 +129,6 @@
           },
           {
             "name": "DEMO_PERCENTAGE_ROLLOUT",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "HA_STATIC_EGRESS_SELF_SERVICE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -194,6 +194,12 @@
             "deprecationReason": null
           },
           {
+            "name": "TEMPORAL_CLOUD_DEPLOYS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "UPDATED_VM_QUERIES",
             "description": null,
             "isDeprecated": false,
@@ -253,12 +259,6 @@
           },
           {
             "name": "USE_EXPRESS_DEPLOY",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "USE_HA_STATIC_EGRESS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -14190,6 +14190,37 @@
             "deprecationReason": null
           },
           {
+            "name": "customDomainIssueCertificate",
+            "description": "Issues a new certificate",
+            "args": [
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "customDomainUpdate",
             "description": "Updates a custom domain.",
             "args": [
@@ -23761,6 +23792,18 @@
             "deprecationReason": null
           },
           {
+            "name": "expiresAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "id",
             "description": null,
             "args": [],
@@ -23815,6 +23858,12 @@
             "deprecationReason": null
           },
           {
+            "name": "CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CTRD_IMAGE_STORE_ROLLOUT",
             "description": null,
             "isDeprecated": false,
@@ -23822,12 +23871,6 @@
           },
           {
             "name": "DEMO_PERCENTAGE_ROLLOUT",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "HA_STATIC_EGRESS_SELF_SERVICE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -23888,6 +23931,12 @@
           },
           {
             "name": "STRIPE_METERS_SHADOW_ENABLED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TEMPORAL_CLOUD_DEPLOYS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

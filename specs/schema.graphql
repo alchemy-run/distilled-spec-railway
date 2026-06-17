@@ -16,9 +16,9 @@ enum ActivePlatformFlag {
   ALERT_SUS_USERS_CRON_KILLSWITCH
   BAN_APPEAL_FORM
   CHAT_SANDBOX
+  CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
-  HA_STATIC_EGRESS_SELF_SERVICE
   INLINE_NOTIFICATION_PROCESSING
   IN_DASHBOARD_SUPPORT
   KAFKA_DEPLOYMENT_STATUS_CHANGES
@@ -29,6 +29,7 @@ enum ActivePlatformFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  TEMPORAL_CLOUD_DEPLOYS
   UPDATED_VM_QUERIES
 }
 
@@ -42,7 +43,6 @@ enum ActiveServiceFeatureFlag {
   PLACEHOLDER
   SKIPPED_BUILDS
   USE_EXPRESS_DEPLOY
-  USE_HA_STATIC_EGRESS
   USE_VM_RUNTIME
 }
 
@@ -1625,6 +1625,9 @@ type Mutation {
   """Deletes a custom domain."""
   customDomainDelete(id: String!): Boolean!
 
+  """Issues a new certificate"""
+  customDomainIssueCertificate(id: String!): Boolean!
+
   """Updates a custom domain."""
   customDomainUpdate(environmentId: String!, id: String!, targetPort: Int): Boolean!
 
@@ -2559,6 +2562,7 @@ enum Plan {
 
 type PlanLimitOverride implements Node {
   config: SubscriptionPlanLimit!
+  expiresAt: DateTime
   id: ID!
 }
 
@@ -2566,9 +2570,9 @@ enum PlatformFeatureFlag {
   ALERT_SUS_USERS_CRON_KILLSWITCH
   BAN_APPEAL_FORM
   CHAT_SANDBOX
+  CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
-  HA_STATIC_EGRESS_SELF_SERVICE
   INLINE_NOTIFICATION_PROCESSING
   IN_DASHBOARD_SUPPORT
   KAFKA_DEPLOYMENT_STATUS_CHANGES
@@ -2579,6 +2583,7 @@ enum PlatformFeatureFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  TEMPORAL_CLOUD_DEPLOYS
   UPDATED_VM_QUERIES
 }
 
