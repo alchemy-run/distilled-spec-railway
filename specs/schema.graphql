@@ -29,7 +29,9 @@ enum ActivePlatformFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  TEMPORAL_CLOUD_DELETIONS
   TEMPORAL_CLOUD_DEPLOYS
+  TEMPORAL_CLOUD_SECONDARY
   UPDATED_VM_QUERIES
 }
 
@@ -897,6 +899,11 @@ input EnableServiceCdnInput {
 type Environment implements Node {
   canAccess: Boolean!
   config(decryptVariables: Boolean): EnvironmentConfig!
+
+  """
+  Opaque snapshot token of the environment's IaC-relevant config. Echo it back as baseConfigEtag on environmentApplyChangeSet for optimistic concurrency.
+  """
+  configEtag: String!
   createdAt: DateTime!
   deletedAt: DateTime
   deploymentTriggers(after: String, before: String, first: Int, last: Int): EnvironmentDeploymentTriggersConnection!
@@ -1713,7 +1720,15 @@ type Mutation {
   """
   Experimental: applies an intent-level RailwayChangeSet and returns operation results.
   """
-  environmentApplyChangeSet(commitMessage: String, environmentId: String!, input: JSON!): ChangeSetApplyResult!
+  environmentApplyChangeSet(
+    """
+    Snapshot token from Environment.configEtag the plan was computed against. When set, the apply is rejected if the environment has changed since.
+    """
+    baseConfigEtag: String
+    commitMessage: String
+    environmentId: String!
+    input: JSON!
+  ): ChangeSetApplyResult!
 
   """Creates a new environment."""
   environmentCreate(input: EnvironmentCreateInput!): Environment!
@@ -2117,6 +2132,11 @@ type Mutation {
 
   """Unpublishes a template."""
   templateUnpublish(id: String!): Boolean!
+
+  """
+  Sets the default size (in MB) for a volume mount in a template's config. New volumes created when the template is deployed are provisioned at this size, clamped to the deployer's plan maximum. Pass sizeMB: null to clear the pre-size and fall back to the plan default. Editing a template requires maintainer access.
+  """
+  templateVolumeUpdate(serviceId: String!, sizeMB: Int, templateId: String!, volumeId: String!): Template!
 
   """Create a new trusted domain for this workspace"""
   trustedDomainCreate(input: WorkspaceTrustedDomainCreateInput!): TrustedDomain!
@@ -2583,7 +2603,9 @@ enum PlatformFeatureFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  TEMPORAL_CLOUD_DELETIONS
   TEMPORAL_CLOUD_DEPLOYS
+  TEMPORAL_CLOUD_SECONDARY
   UPDATED_VM_QUERIES
 }
 
@@ -3253,6 +3275,11 @@ type Query {
 
   """Find a single environment"""
   environment(id: String!, projectId: String): Environment!
+
+  """
+  Whether any service in the environment is on legacy static egress (not HA). Used to surface the HA migration banner.
+  """
+  environmentHasLegacyStaticEgress(environmentId: String!): Boolean!
 
   """
   Fetch logs for a project environment. Build logs are excluded unless a snapshot ID is explicitly provided in the filter
