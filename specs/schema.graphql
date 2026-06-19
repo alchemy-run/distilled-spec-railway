@@ -29,9 +29,10 @@ enum ActivePlatformFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  TEMPORAL_CLOUD_DELETIONS
   TEMPORAL_CLOUD_DEPLOYS
+  TEMPORAL_CLOUD_ENVIRONMENTS
   TEMPORAL_CLOUD_SECONDARY
+  TEMPORAL_CLOUD_USER_CRONS
   UPDATED_VM_QUERIES
 }
 
@@ -2340,6 +2341,96 @@ type Mutation {
   workspaceUserRemove(input: WorkspaceUserRemoveInput!, workspaceId: String!): Boolean!
 }
 
+"""The direction of a network flow relative to the service"""
+enum NetworkFlowDirection {
+  egress
+  ingress
+}
+
+"""The layer 4 protocol of a network flow"""
+enum NetworkFlowL4Protocol {
+  icmp
+  icmpv6
+  tcp
+  udp
+  unknown
+}
+
+"""A single network flow log entry"""
+type NetworkFlowLog {
+  """Number of bytes transferred"""
+  byteCount: Int!
+
+  """When the flow capture ended (ISO timestamp)"""
+  captureEnd: String!
+
+  """When the flow capture started (ISO timestamp)"""
+  captureStart: String!
+
+  """The deployment ID"""
+  deploymentId: String!
+
+  """The deployment instance ID"""
+  deploymentInstanceId: String!
+
+  """Traffic direction (ingress or egress)"""
+  direction: NetworkFlowDirection!
+
+  """If packets were dropped, the reason"""
+  dropCause: String
+
+  """Destination IP address"""
+  dstAddr: String!
+
+  """Destination port number"""
+  dstPort: Int!
+
+  """Unique identifier for the flow"""
+  flowId: String!
+
+  """Whether the flow is partial or complete"""
+  flowState: NetworkFlowState!
+
+  """Layer 4 latency in milliseconds"""
+  l4LatencyMs: Float!
+
+  """Layer 4 protocol (TCP, UDP, ICMP, etc)"""
+  l4Protocol: NetworkFlowL4Protocol!
+
+  """Number of packets transferred"""
+  packetCount: Int!
+
+  """Type of peer (service, internet, DNS, etc)"""
+  peerKind: NetworkFlowPeerKind!
+
+  """Service instance ID of the peer (for service-to-service flows)"""
+  peerServiceId: String
+
+  """The service ID this flow belongs to"""
+  serviceId: String!
+
+  """Source IP address"""
+  srcAddr: String!
+
+  """Source port number"""
+  srcPort: Int!
+}
+
+"""The type of peer in a network flow"""
+enum NetworkFlowPeerKind {
+  edge_proxy
+  internet
+  local_dns
+  service
+  unknown
+}
+
+"""The state of a network flow"""
+enum NetworkFlowState {
+  complete
+  partial
+}
+
 interface Node {
   id: ID!
 }
@@ -2603,9 +2694,10 @@ enum PlatformFeatureFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  TEMPORAL_CLOUD_DELETIONS
   TEMPORAL_CLOUD_DEPLOYS
+  TEMPORAL_CLOUD_ENVIRONMENTS
   TEMPORAL_CLOUD_SECONDARY
+  TEMPORAL_CLOUD_USER_CRONS
   UPDATED_VM_QUERIES
 }
 
@@ -3525,6 +3617,33 @@ type Query {
     volumeInstanceExternalId: String
     workspaceId: String
   ): [MetricsResult!]!
+
+  """Fetch individual network flow logs for an environment"""
+  networkFlowLogs(
+    """Latest date to look for logs after the anchor"""
+    afterDate: String
+
+    """Limit logs returned after the anchor"""
+    afterLimit: Int
+
+    """Target date time to look for logs"""
+    anchorDate: String
+
+    """Oldest date to look for logs before the anchor"""
+    beforeDate: String
+
+    """Limit logs returned before the anchor"""
+    beforeLimit: Int
+    environmentId: String!
+
+    """
+    Filter expression (e.g., @protocol:tcp @direction:egress @dropped:true)
+    """
+    filter: String
+
+    """Filter by service ID (optional)"""
+    serviceId: String
+  ): [NetworkFlowLog!]!
 
   """Gets notification deliveries for the authenticated user"""
   notificationDeliveries(after: String, before: String, filter: NotificationDeliveryFilterInput, first: Int, last: Int): QueryNotificationDeliveriesConnection!
@@ -4826,6 +4945,33 @@ type Subscription {
     """Filter logs using a query syntax"""
     filter: String
   ): [HttpLog!]!
+
+  """Stream network flow logs for an environment"""
+  networkFlowLogs(
+    """Latest date to look for logs after the anchor"""
+    afterDate: String
+
+    """Limit logs returned after the anchor"""
+    afterLimit: Int
+
+    """Target date time to look for logs"""
+    anchorDate: String
+
+    """Oldest date to look for logs before the anchor"""
+    beforeDate: String
+
+    """Limit logs returned before the anchor"""
+    beforeLimit: Int
+    environmentId: String!
+
+    """
+    Filter expression (e.g., @protocol:tcp @direction:egress @dropped:true)
+    """
+    filter: String
+
+    """Filter by service ID (optional)"""
+    serviceId: String
+  ): [NetworkFlowLog!]!
 
   """
   Subscribe to notification delivery updates (created and resolved) for the authenticated user
