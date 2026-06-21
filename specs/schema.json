@@ -134,12 +134,6 @@
             "deprecationReason": null
           },
           {
-            "name": "INLINE_NOTIFICATION_PROCESSING",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "IN_DASHBOARD_SUPPORT",
             "description": null,
             "isDeprecated": false,
@@ -201,6 +195,12 @@
           },
           {
             "name": "TEMPORAL_CLOUD_DEPLOYS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TEMPORAL_CLOUD_DEPLOY_REMOVALS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -24430,12 +24430,6 @@
             "deprecationReason": null
           },
           {
-            "name": "INLINE_NOTIFICATION_PROCESSING",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "IN_DASHBOARD_SUPPORT",
             "description": null,
             "isDeprecated": false,
@@ -24497,6 +24491,12 @@
           },
           {
             "name": "TEMPORAL_CLOUD_DEPLOYS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TEMPORAL_CLOUD_DEPLOY_REMOVALS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
