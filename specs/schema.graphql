@@ -15,6 +15,7 @@ enum ActiveFeatureFlag {
 enum ActivePlatformFlag {
   ALERT_SUS_USERS_CRON_KILLSWITCH
   BAN_APPEAL_FORM
+  BUILD_DEPLOY_QUEUE_V2
   CHAT_SANDBOX
   CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
   CTRD_IMAGE_STORE_ROLLOUT
@@ -374,6 +375,13 @@ type ComplianceAgreementsInfo {
   hasDPA: Boolean!
 }
 
+type ConnectedServiceInstance {
+  environmentId: String!
+  projectId: String!
+  serviceId: String!
+  serviceName: String
+}
+
 type Container implements Node {
   createdAt: DateTime!
   deletedAt: DateTime
@@ -422,6 +430,7 @@ type CustomDomain implements Domain {
   edgeId: String
   environmentId: String!
   id: ID!
+  isRailwayDomain: Boolean!
   projectId: String
   serviceId: String!
   status: CustomDomainStatus!
@@ -1977,6 +1986,23 @@ type Mutation {
   """
   purgeServiceCache(input: PurgeServiceCacheInput!): Boolean!
 
+  """Create a DNS record for a Railway domain"""
+  railwayDomainDnsRecordCreate(input: RailwayDomainDnsRecordCreateInput!): RailwayDomainDnsRecord!
+
+  """Delete a DNS record for a Railway domain"""
+  railwayDomainDnsRecordDelete(input: RailwayDomainDnsRecordDeleteInput!): Boolean!
+
+  """Update a DNS record for a Railway domain"""
+  railwayDomainDnsRecordUpdate(input: RailwayDomainDnsRecordUpdateInput!): RailwayDomainDnsRecord!
+
+  """
+  Delegate the domain's authoritative nameservers to an external DNS provider, or reset to Railway defaults by passing an empty list.
+  """
+  railwayDomainNameserversSet(input: RailwayDomainNameserversSetInput!): RailwayDomainNameservers!
+
+  """Update a Railway domain's settings"""
+  railwayDomainUpdate(input: RailwayDomainUpdateInput!): RailwayDomain!
+
   """Generates a new set of recovery codes for the authenticated user."""
   recoveryCodeGenerate: RecoveryCodes!
 
@@ -2681,6 +2707,7 @@ type PlanLimitOverride implements Node {
 enum PlatformFeatureFlag {
   ALERT_SUS_USERS_CRON_KILLSWITCH
   BAN_APPEAL_FORM
+  BUILD_DEPLOY_QUEUE_V2
   CHAT_SANDBOX
   CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
   CTRD_IMAGE_STORE_ROLLOUT
@@ -3753,6 +3780,18 @@ type Query {
   """Get public Railway stats."""
   publicStats: PublicStats!
 
+  """Get a Railway domain by ID"""
+  railwayDomain(id: String!): RailwayDomain!
+
+  """Get a Railway domain by its domain name within a workspace"""
+  railwayDomainByName(domain: String!, workspaceId: String!): RailwayDomain!
+
+  """List DNS records for a Railway domain"""
+  railwayDomainDnsRecords(domain: String!, workspaceId: String!): [RailwayDomainDnsRecord!]!
+
+  """Get Railway domains for a workspace"""
+  railwayDomains(status: RailwayDomainStatus, workspaceId: String!): [RailwayDomain!]!
+
   """Gets the ReferralInfo for the authenticated user."""
   referralInfo(workspaceId: String!): ReferralInfo!
 
@@ -4234,6 +4273,104 @@ type QueryWorkspaceTemplatesConnectionEdge {
 }
 
 scalar RailpackInfo
+
+type RailwayDomain {
+  autoRenewEnabled: Boolean!
+  connectedServiceInstances: [ConnectedServiceInstance!]!
+  createdAt: DateTime!
+  domain: String!
+  id: ID!
+
+  """
+  Authoritative nameservers currently delegated for this domain at the registrar.
+  """
+  nameservers: RailwayDomainNameservers!
+  nextBillingDate: DateTime
+  purchasePrice: Int!
+  registrationYears: Int!
+  renewalPrice: Int!
+  status: RailwayDomainStatus!
+  workspaceId: String!
+  workspaceName: String
+}
+
+type RailwayDomainDnsRecord {
+  answer: String!
+  domainName: String!
+  fqdn: String!
+  host: String!
+  id: Int!
+  priority: Int
+  ttl: Int!
+  type: RailwayDomainDnsRecordType!
+}
+
+input RailwayDomainDnsRecordCreateInput {
+  answer: String!
+  domain: String!
+  host: String!
+  priority: Int
+  ttl: Int
+  type: RailwayDomainDnsRecordType!
+  workspaceId: String!
+}
+
+input RailwayDomainDnsRecordDeleteInput {
+  domain: String!
+  recordId: Int!
+  workspaceId: String!
+}
+
+enum RailwayDomainDnsRecordType {
+  A
+  AAAA
+  ANAME
+  CNAME
+  MX
+  NS
+  SRV
+  TXT
+}
+
+input RailwayDomainDnsRecordUpdateInput {
+  answer: String!
+  domain: String!
+  host: String!
+  priority: Int
+  recordId: Int!
+  ttl: Int
+  type: RailwayDomainDnsRecordType!
+  workspaceId: String!
+}
+
+type RailwayDomainNameservers {
+  """
+  True when the domain is delegated to Name.com's nameservers (Railway-managed DNS).
+  """
+  isDefault: Boolean!
+  nameservers: [String!]!
+}
+
+input RailwayDomainNameserversSetInput {
+  id: String!
+
+  """
+  Hostnames of the nameservers to delegate to (2-13). Pass an empty list to reset to Name.com's account-level defaults for this domain.
+  """
+  nameservers: [String!]!
+}
+
+enum RailwayDomainStatus {
+  ACTIVE
+  EXPIRED
+  PURCHASING
+  REFUNDED
+}
+
+input RailwayDomainUpdateInput {
+  autoRenewEnabled: Boolean
+  id: String!
+}
 
 input RecoveryCodeValidateInput {
   code: String!
