@@ -146,12 +146,6 @@
             "deprecationReason": null
           },
           {
-            "name": "KAFKA_DEPLOYMENT_STATUS_CHANGES",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES",
             "description": null,
             "isDeprecated": false,
@@ -165,12 +159,6 @@
           },
           {
             "name": "OAUTH_DCR_KILLSWITCH",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "RADAR_AUTO_EVALUATE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -207,18 +195,6 @@
           },
           {
             "name": "TEMPORAL_CLOUD_DEPLOY_REMOVALS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "TEMPORAL_CLOUD_ENVIRONMENTS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "TEMPORAL_CLOUD_SECONDARY",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -19424,6 +19400,37 @@
             "deprecationReason": null
           },
           {
+            "name": "sshSignupApprove",
+            "description": "Approve an SSH signup: register the offered SSH key on the authenticated account so the agent is recognized.",
+            "args": [
+              {
+                "name": "code",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "tcpProxyCreate",
             "description": "Creates a new TCP proxy for a service instance.",
             "args": [
@@ -24690,12 +24697,6 @@
             "deprecationReason": null
           },
           {
-            "name": "KAFKA_DEPLOYMENT_STATUS_CHANGES",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES",
             "description": null,
             "isDeprecated": false,
@@ -24709,12 +24710,6 @@
           },
           {
             "name": "OAUTH_DCR_KILLSWITCH",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "RADAR_AUTO_EVALUATE",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -24751,18 +24746,6 @@
           },
           {
             "name": "TEMPORAL_CLOUD_DEPLOY_REMOVALS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "TEMPORAL_CLOUD_ENVIRONMENTS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "TEMPORAL_CLOUD_SECONDARY",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -35939,6 +35922,37 @@
             "deprecationReason": null
           },
           {
+            "name": "sshSignupInfo",
+            "description": "Details for an SSH signup confirm page: the SSH key fingerprint to verify before binding it to the account.",
+            "args": [
+              {
+                "name": "code",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SSHSignupInfo",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "tcpProxies",
             "description": "All TCP proxies for a service instance",
             "args": [
@@ -41462,6 +41476,33 @@
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "SSHSignupInfo",
+        "description": null,
+        "fields": [
+          {
+            "name": "fingerprint",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
         "possibleTypes": null
       },
       {

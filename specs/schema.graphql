@@ -21,19 +21,15 @@ enum ActivePlatformFlag {
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
   IN_DASHBOARD_SUPPORT
-  KAFKA_DEPLOYMENT_STATUS_CHANGES
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
   OAUTH_DCR_KILLSWITCH
-  RADAR_AUTO_EVALUATE
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   TEMPORAL_CLOUD_DEPLOYS
   TEMPORAL_CLOUD_DEPLOY_REMOVALS
-  TEMPORAL_CLOUD_ENVIRONMENTS
-  TEMPORAL_CLOUD_SECONDARY
   TEMPORAL_CLOUD_USER_CRONS
   UPDATED_VM_QUERIES
 }
@@ -2129,6 +2125,11 @@ type Mutation {
   """Deletes an SSH public key."""
   sshPublicKeyDelete(id: String!): Boolean!
 
+  """
+  Approve an SSH signup: register the offered SSH key on the authenticated account so the agent is recognized.
+  """
+  sshSignupApprove(code: String!): Boolean!
+
   """Creates a new TCP proxy for a service instance."""
   tcpProxyCreate(input: TCPProxyCreateInput!): TCPProxy! @deprecated(reason: "Use staged changes and apply them. Creating a TCP proxy with this endpoint requires you to redeploy the service for it to be active.")
 
@@ -2713,19 +2714,15 @@ enum PlatformFeatureFlag {
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
   IN_DASHBOARD_SUPPORT
-  KAFKA_DEPLOYMENT_STATUS_CHANGES
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
   OAUTH_DCR_KILLSWITCH
-  RADAR_AUTO_EVALUATE
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   TEMPORAL_CLOUD_DEPLOYS
   TEMPORAL_CLOUD_DEPLOY_REMOVALS
-  TEMPORAL_CLOUD_ENVIRONMENTS
-  TEMPORAL_CLOUD_SECONDARY
   TEMPORAL_CLOUD_USER_CRONS
   UPDATED_VM_QUERIES
 }
@@ -3855,6 +3852,11 @@ type Query {
   """
   sshPublicKeys(after: String, before: String, first: Int, last: Int, workspaceId: String): QuerySshPublicKeysConnection!
 
+  """
+  Details for an SSH signup confirm page: the SSH key fingerprint to verify before binding it to the account.
+  """
+  sshSignupInfo(code: String!): SSHSignupInfo!
+
   """All TCP proxies for a service instance"""
   tcpProxies(environmentId: String!, serviceId: String!): [TCPProxy!]!
 
@@ -4488,6 +4490,10 @@ enum RestartPolicyType {
   ALWAYS
   NEVER
   ON_FAILURE
+}
+
+type SSHSignupInfo {
+  fingerprint: String!
 }
 
 type Sandbox {
