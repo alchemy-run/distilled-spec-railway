@@ -69,12 +69,6 @@
             "deprecationReason": null
           },
           {
-            "name": "POSTGRES_PGBOUNCER",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "PRIORITY_BOARDING",
             "description": null,
             "isDeprecated": false,
