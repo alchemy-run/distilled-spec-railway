@@ -200,6 +200,12 @@
             "deprecationReason": null
           },
           {
+            "name": "TEMPORAL_CLOUD_VOLUME_BACKUPS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "UPDATED_VM_QUERIES",
             "description": null,
             "isDeprecated": false,
@@ -24746,6 +24752,12 @@
           },
           {
             "name": "TEMPORAL_CLOUD_USER_CRONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TEMPORAL_CLOUD_VOLUME_BACKUPS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
