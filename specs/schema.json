@@ -14070,6 +14070,16 @@
                   }
                 },
                 "defaultValue": null
+              },
+              {
+                "name": "redeployDependents",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "Boolean",
+                  "ofType": null
+                },
+                "defaultValue": null
               }
             ],
             "type": {

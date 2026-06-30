@@ -1617,7 +1617,7 @@ type Mutation {
   bucketCreate(input: BucketCreateInput!): Bucket!
 
   """Reset the credentials for a bucket in an environment"""
-  bucketCredentialsReset(bucketId: String!, environmentId: String!, projectId: String!): BucketS3CompatibleCredentials!
+  bucketCredentialsReset(bucketId: String!, environmentId: String!, projectId: String!, redeployDependents: Boolean): BucketS3CompatibleCredentials!
 
   """Updates a bucket."""
   bucketUpdate(id: String!, input: BucketUpdateInput!): Bucket!
