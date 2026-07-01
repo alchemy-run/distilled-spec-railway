@@ -4,6 +4,7 @@ type AccessRule {
 
 enum ActiveFeatureFlag {
   CHAT_SANDBOX
+  CS_MCP
   DEBUG_SMART_DIAGNOSIS
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
@@ -17,6 +18,7 @@ enum ActivePlatformFlag {
   BUILD_DEPLOY_QUEUE_V2
   CHAT_SANDBOX
   CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
+  CS_MCP
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
   IN_DASHBOARD_SUPPORT
@@ -2711,6 +2713,7 @@ enum PlatformFeatureFlag {
   BUILD_DEPLOY_QUEUE_V2
   CHAT_SANDBOX
   CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
+  CS_MCP
   CTRD_IMAGE_STORE_ROLLOUT
   DEMO_PERCENTAGE_ROLLOUT
   IN_DASHBOARD_SUPPORT
@@ -3661,6 +3664,9 @@ type Query {
 
     """Limit logs returned before the anchor"""
     beforeLimit: Int
+
+    """Filter by deployment instance / sandbox ID (optional)"""
+    deploymentInstanceId: String
     environmentId: String!
 
     """
@@ -5108,6 +5114,9 @@ type Subscription {
 
     """Limit logs returned before the anchor"""
     beforeLimit: Int
+
+    """Filter by deployment instance / sandbox ID (optional)"""
+    deploymentInstanceId: String
     environmentId: String!
 
     """

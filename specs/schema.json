@@ -51,6 +51,12 @@
             "deprecationReason": null
           },
           {
+            "name": "CS_MCP",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "DEBUG_SMART_DIAGNOSIS",
             "description": null,
             "isDeprecated": false,
@@ -117,6 +123,12 @@
           },
           {
             "name": "CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CS_MCP",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -24689,6 +24701,12 @@
             "deprecationReason": null
           },
           {
+            "name": "CS_MCP",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CTRD_IMAGE_STORE_ROLLOUT",
             "description": null,
             "isDeprecated": false,
@@ -33678,6 +33696,16 @@
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "deploymentInstanceId",
+                "description": "Filter by deployment instance / sandbox ID (optional)",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 },
                 "defaultValue": null
@@ -46302,6 +46330,16 @@
                 "type": {
                   "kind": "SCALAR",
                   "name": "Int",
+                  "ofType": null
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "deploymentInstanceId",
+                "description": "Filter by deployment instance / sandbox ID (optional)",
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
                   "ofType": null
                 },
                 "defaultValue": null
