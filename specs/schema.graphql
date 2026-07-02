@@ -4574,9 +4574,14 @@ type SandboxSession {
   """Whether a client is currently connected."""
   attached: Boolean!
 
-  """The exec command; empty for an interactive shell."""
+  """The command being run; empty for an interactive shell."""
   command: String!
   createdAt: DateTime
+
+  """
+  For an interactive shell, whether a foreground program currently holds the terminal. Null otherwise, or when the runtime can't report it.
+  """
+  foregroundActive: Boolean
   kind: SandboxSessionKind!
 
   """Stable session name; reconnect/attach by this."""

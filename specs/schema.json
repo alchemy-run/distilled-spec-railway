@@ -41955,7 +41955,7 @@
           },
           {
             "name": "command",
-            "description": "The exec command; empty for an interactive shell.",
+            "description": "The command being run; empty for an interactive shell.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -41976,6 +41976,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "foregroundActive",
+            "description": "For an interactive shell, whether a foreground program currently holds the terminal. Null otherwise, or when the runtime can't report it.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "isDeprecated": false,
