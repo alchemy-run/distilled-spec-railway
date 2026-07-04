@@ -212,12 +212,6 @@
             "deprecationReason": null
           },
           {
-            "name": "TEMPORAL_CLOUD_USER_CRONS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "TEMPORAL_CLOUD_VOLUME_BACKUPS",
             "description": null,
             "isDeprecated": false,
@@ -820,6 +814,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "expiresAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -24858,12 +24864,6 @@
           },
           {
             "name": "TEMPORAL_CLOUD_DEPLOY_REMOVALS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "TEMPORAL_CLOUD_USER_CRONS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
