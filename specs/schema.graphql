@@ -38,6 +38,7 @@ enum ActivePlatformFlag {
 
 enum ActiveProjectFeatureFlag {
   PLACEHOLDER
+  SANDBOX_REGION_SELECTION
 }
 
 enum ActiveServiceFeatureFlag {
@@ -2126,6 +2127,33 @@ type Mutation {
   """Configure a shared variable."""
   sharedVariableConfigure(input: SharedVariableConfigureInput!): Variable!
 
+  """Register a new signal for an owner scope."""
+  signalCreate(input: SignalCreateInput!): Signal!
+
+  """Change a signal's canonical default (production floor)."""
+  signalDefaultSet(input: SignalDefaultSetInput!): Signal!
+
+  """Delete a signal and its audit log."""
+  signalDelete(input: SignalDeleteInput!): Signal!
+
+  """
+  Replace a signal's type and default, clearing all rules. Destructive — intended for CLI --force re-type.
+  """
+  signalReplace(input: SignalReplaceInput!): Signal!
+
+  """
+  Restore a signal to the snapshot captured before a change (reads prevState from the target change row).
+  """
+  signalRollback(input: SignalRollbackInput!): Signal!
+
+  """
+  Attach or replace a rule on a signal. Matching rules must agree at resolution time or the default is returned.
+  """
+  signalRuleSet(input: SignalRuleSetInput!): Signal!
+
+  """Remove a rule from a signal."""
+  signalRuleUnset(input: SignalRuleUnsetInput!): Signal!
+
   """
   Creates a new SSH public key. When workspaceId is provided (or omitted under a workspace-scoped API token, in which case it defaults to the token's workspace), the key is owned by the workspace and can be used by anyone authenticating as that workspace via native SSH; requires workspace ADMIN access. Otherwise the key is owned by the authenticated user.
   """
@@ -3861,6 +3889,20 @@ type Query {
   """Gets all sessions for authenticated user."""
   sessions(after: String, before: String, first: Int, last: Int): QuerySessionsConnection!
 
+  """Fetch a single signal by owner scope and name."""
+  signal(name: String!, owner: String!): Signal
+
+  """Recent audit log entries for a signal."""
+  signalChanges(limit: Int = 50, name: String!, owner: String!): [SignalChange!]!
+
+  """
+  Evaluate a signal against an evaluation context (pure resolution; does not mutate registry state).
+  """
+  signalEvaluate(context: JSON!, name: String!, owner: String!): SignalEvaluation!
+
+  """List signals registered for an owner scope."""
+  signals(owner: String!): [Signal!]!
+
   """
   Gets SSH public keys. If workspaceId is provided, returns the keys owned by that workspace (requires workspace MEMBER access). Under a workspace-scoped API token, workspaceId defaults to the token's workspace when omitted; otherwise returns the authenticated user's personal keys.
   """
@@ -4544,6 +4586,11 @@ input SandboxCreateInput {
   networkIsolation: SandboxNetworkIsolation
 
   """
+  Region to place the sandbox in (e.g. us-west2, us-east4-eqdc4a). Defaults to the platform default region when omitted.
+  """
+  region: String
+
+  """
   Fork an existing running sandbox in this environment. Mutually exclusive with template.
   """
   sourceSandboxId: String
@@ -4975,6 +5022,104 @@ input ShellTokenInput {
   port: Int
   scope: String!
   serviceId: String
+}
+
+type Signal implements Node {
+  createdAt: DateTime!
+  createdBy: String
+  default: JSON!
+  id: ID!
+  name: String!
+  owner: String!
+  rules: JSON!
+  type: SignalType!
+  updatedAt: DateTime!
+  version: BigInt!
+  writableBy: [String!]!
+}
+
+type SignalChange implements Node {
+  authorId: String
+  createdAt: DateTime!
+  id: ID!
+  kind: SignalChangeKind!
+  payload: JSON!
+  prevState: JSON!
+  seq: BigInt!
+  signalId: String!
+}
+
+enum SignalChangeKind {
+  default_changed
+  replaced
+  rollback
+  set
+  unset
+}
+
+input SignalCreateInput {
+  default: JSON!
+  name: String!
+  owner: String!
+  type: SignalType!
+  writableBy: [String!]
+}
+
+input SignalDefaultSetInput {
+  default: JSON!
+  name: String!
+  owner: String!
+}
+
+input SignalDeleteInput {
+  name: String!
+  owner: String!
+}
+
+type SignalEvaluation {
+  reason: SignalEvaluationReason!
+  trace: JSON!
+  value: JSON!
+}
+
+enum SignalEvaluationReason {
+  DEFAULT
+  SPLIT
+  TARGETING_MATCH
+}
+
+input SignalReplaceInput {
+  default: JSON!
+  name: String!
+  owner: String!
+  type: SignalType!
+}
+
+input SignalRollbackInput {
+  name: String!
+  owner: String!
+  seq: BigInt!
+}
+
+input SignalRuleSetInput {
+  expression: JSON!
+  name: String!
+  owner: String!
+  ruleId: String!
+  value: JSON!
+}
+
+input SignalRuleUnsetInput {
+  name: String!
+  owner: String!
+  ruleId: String!
+}
+
+enum SignalType {
+  bool
+  json
+  number
+  string
 }
 
 type SimilarTemplate {
