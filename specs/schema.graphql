@@ -38,7 +38,6 @@ enum ActivePlatformFlag {
 
 enum ActiveProjectFeatureFlag {
   PLACEHOLDER
-  SANDBOX_REGION_SELECTION
 }
 
 enum ActiveServiceFeatureFlag {
@@ -3890,18 +3889,18 @@ type Query {
   sessions(after: String, before: String, first: Int, last: Int): QuerySessionsConnection!
 
   """Fetch a single signal by owner scope and name."""
-  signal(name: String!, owner: String!): Signal
+  signal(name: String!, owner: String): Signal
 
   """Recent audit log entries for a signal."""
-  signalChanges(limit: Int = 50, name: String!, owner: String!): [SignalChange!]!
+  signalChanges(limit: Int = 50, name: String!, owner: String): [SignalChange!]!
 
   """
   Evaluate a signal against an evaluation context (pure resolution; does not mutate registry state).
   """
-  signalEvaluate(context: JSON!, name: String!, owner: String!): SignalEvaluation!
+  signalEvaluate(context: JSON!, name: String!, owner: String): SignalEvaluation!
 
   """List signals registered for an owner scope."""
-  signals(owner: String!): [Signal!]!
+  signals(owner: String): [Signal!]!
 
   """
   Gets SSH public keys. If workspaceId is provided, returns the keys owned by that workspace (requires workspace MEMBER access). Under a workspace-scoped API token, workspaceId defaults to the token's workspace when omitted; otherwise returns the authenticated user's personal keys.
