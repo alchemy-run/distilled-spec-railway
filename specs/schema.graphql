@@ -4,7 +4,6 @@ type AccessRule {
 
 enum ActiveFeatureFlag {
   CHAT_SANDBOX
-  CS_MCP
   DEBUG_SMART_DIAGNOSIS
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
@@ -75,6 +74,20 @@ type AdoptionInfo implements Node {
   totalNetwork: Float
   updatedAt: DateTime!
   workspace: Workspace!
+}
+
+input AgentUsageLimitSetInput {
+  hardLimitCents: Int!
+  softLimitCents: Int
+  workspaceId: String!
+}
+
+type AgentUsageSummary {
+  billingPeriodEnd: DateTime!
+  hardLimitCents: Int
+  softLimitCents: Int
+  totalUsedCents: Int!
+  usageRemaining: Float
 }
 
 """The aggregated usage of a single measurement."""
@@ -1613,6 +1626,9 @@ type MonitorThresholdConfig {
 }
 
 type Mutation {
+  """Set agent usage limit for a workspace"""
+  agentUsageLimitSet(input: AgentUsageLimitSetInput!): Boolean!
+
   """Creates a new API token."""
   apiTokenCreate(input: ApiTokenCreateInput!): String!
 
@@ -3318,6 +3334,9 @@ input PurgeServiceCacheInput {
 type Query {
   """Get all volume instances for a given volume"""
   adminVolumeInstancesForVolume(volumeId: String!): [VolumeInstance!]!
+
+  """Get unified AI usage for a workspace"""
+  agentUsage(workspaceId: String!): AgentUsageSummary!
 
   """Returns the platform feature flags enabled for the current user"""
   allPlatformFeatureFlags: [PlatformFeatureFlagStatus!]!
