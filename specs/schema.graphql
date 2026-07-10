@@ -3,6 +3,7 @@ type AccessRule {
 }
 
 enum ActiveFeatureFlag {
+  AGENT_VM
   CHAT_SANDBOX
   DEBUG_SMART_DIAGNOSIS
   IN_DASHBOARD_SUPPORT
@@ -15,6 +16,7 @@ enum ActivePlatformFlag {
   ALERT_SUS_USERS_CRON_KILLSWITCH
   BAN_APPEAL_FORM
   BUILD_DEPLOY_QUEUE_V2
+  CANVAS_CROSS_ENV_GUARD_ENFORCE
   CHAT_SANDBOX
   CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
   CS_MCP
@@ -194,6 +196,17 @@ scalar BigInt
 type BillingPeriod {
   end: DateTime!
   start: DateTime!
+}
+
+type BotScopeBindingInfo {
+  canRemove: Boolean!
+  id: String!
+  platform: String!
+  scopeId: String!
+  scopeName: String
+  scopeType: String!
+  workspaceId: String!
+  workspaceName: String!
 }
 
 type Bucket implements Node {
@@ -1638,6 +1651,11 @@ type Mutation {
   """Sets the base environment override for a deployment trigger."""
   baseEnvironmentOverride(id: String!, input: BaseEnvironmentOverrideInput!): Boolean!
 
+  """
+  Remove a Railway agent chat binding. Requires admin on the binding's workspace.
+  """
+  botScopeBindingRemove(id: String!): Boolean!
+
   """Create a bucket in a project"""
   bucketCreate(input: BucketCreateInput!): Bucket!
 
@@ -2761,6 +2779,7 @@ enum PlatformFeatureFlag {
   ALERT_SUS_USERS_CRON_KILLSWITCH
   BAN_APPEAL_FORM
   BUILD_DEPLOY_QUEUE_V2
+  CANVAS_CROSS_ENV_GUARD_ENFORCE
   CHAT_SANDBOX
   CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
   CS_MCP
@@ -3362,6 +3381,11 @@ type Query {
   """Gets audit logs for a workspace."""
   auditLogs(after: String, before: String, filter: AuditLogFilterInput, first: Int, last: Int, sort: SortOrder, workspaceId: String!): QueryAuditLogsConnection!
 
+  """
+  Railway agent chat bindings (Slack/Discord scope → workspace) across the caller's workspaces.
+  """
+  botScopeBindings: [BotScopeBindingInfo!]!
+
   """Get the S3-compatible credentials for a bucket"""
   bucketInstanceDetails(bucketId: String!, environmentId: String!): BucketInstanceDetails
 
@@ -3421,6 +3445,11 @@ type Query {
     limit: Int
     startDate: DateTime
   ): [Log!]!
+
+  """
+  Shell and exec sessions running on this deployment's VM that you can reconnect to. Null if the deployment has no running VM.
+  """
+  deploymentSessions(after: String, before: String, deploymentId: String!, first: Int, last: Int): QueryDeploymentSessionsConnection
 
   """Find a single DeploymentSnapshot"""
   deploymentSnapshot(deploymentId: String!): DeploymentSnapshot
@@ -4118,6 +4147,16 @@ type QueryDeploymentInstanceExecutionsConnectionEdge {
   node: DeploymentInstanceExecution!
 }
 
+type QueryDeploymentSessionsConnection {
+  edges: [QueryDeploymentSessionsConnectionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type QueryDeploymentSessionsConnectionEdge {
+  cursor: String!
+  node: SandboxSession!
+}
+
 type QueryDeploymentTriggersConnection {
   edges: [QueryDeploymentTriggersConnectionEdge!]!
   pageInfo: PageInfo!
@@ -4741,7 +4780,9 @@ type Service implements Node {
   icon: String
   id: ID!
 
-  """Whether this service currently has an active restriction."""
+  """
+  Whether this service has an active restriction that limits its capabilities.
+  """
   isRestricted: Boolean!
   name: String!
   project: Project!
