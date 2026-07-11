@@ -45,6 +45,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AGENT_BYOK",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "AGENT_VM",
             "description": null,
             "isDeprecated": false,
@@ -21382,7 +21388,7 @@
               },
               {
                 "name": "sourceRepoPath",
-                "description": "Caller-supplied source archive sub-prefix (e.g. `pgbackrest/cluster-<sysid>`). Provided by the multi-history picker when the user selects a specific cluster lifetime out of multiple sub-prefixes in the source bucket. Null falls through to the workflow's SSH probe of the live source's marker file, which always resolves to the current cluster's history.",
+                "description": "Caller-supplied source archive sub-prefix (e.g. `/pgbackrest/cluster-<sysid>`), as an absolute bucket path (leading slash, `[A-Za-z0-9._-]` segments) at or under the source service's archive root (`WAL_ARCHIVE_PATH`). Provided by the multi-history picker when the user selects a specific cluster lifetime out of multiple sub-prefixes in the source bucket. Scopes both the pre-flight restore-window validation and the restored fork's archive source, treating the selected history's archive as frozen (no allowance for in-flight archiving). Pass null to restore the live source's current cluster.",
                 "type": {
                   "kind": "SCALAR",
                   "name": "String",
