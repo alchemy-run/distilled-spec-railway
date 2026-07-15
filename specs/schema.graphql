@@ -893,6 +893,7 @@ type EdgeConfig {
   caching: EdgeCachingConfig
   enabled: Boolean!
   id: String!
+  overrides: JSON!
   purgeEpoch: Int!
   purgeEpochByKind: JSON!
   underAttackModeUntil: Int
