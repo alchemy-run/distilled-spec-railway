@@ -4,8 +4,8 @@ type AccessRule {
 
 enum ActiveFeatureFlag {
   AGENT_BYOK
-  AGENT_VM
   CHAT_SANDBOX
+  CLOUD_AGENTS
   DEBUG_SMART_DIAGNOSIS
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
@@ -1821,7 +1821,7 @@ type Mutation {
   environmentTriggersDeploy(input: EnvironmentTriggersDeployInput!): Boolean!
 
   """
-  Unskip a service in a PR environment, deploying it and its transitive dependencies.
+  Deploy a service that was skipped when its environment was created, along with its skipped transitive dependencies.
   """
   environmentUnskipService(environmentId: String!, serviceId: String!): Boolean!
 

@@ -51,13 +51,13 @@
             "deprecationReason": null
           },
           {
-            "name": "AGENT_VM",
+            "name": "CHAT_SANDBOX",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "CHAT_SANDBOX",
+            "name": "CLOUD_AGENTS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -16063,7 +16063,7 @@
           },
           {
             "name": "environmentUnskipService",
-            "description": "Unskip a service in a PR environment, deploying it and its transitive dependencies.",
+            "description": "Deploy a service that was skipped when its environment was created, along with its skipped transitive dependencies.",
             "args": [
               {
                 "name": "environmentId",
