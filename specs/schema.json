@@ -152,6 +152,12 @@
             "deprecationReason": null
           },
           {
+            "name": "DEFAULT_USAGE_ALERTS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "DEMO_PERCENTAGE_ROLLOUT",
             "description": null,
             "isDeprecated": false,
@@ -25384,6 +25390,12 @@
           },
           {
             "name": "CTRD_IMAGE_STORE_ROLLOUT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DEFAULT_USAGE_ALERTS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
