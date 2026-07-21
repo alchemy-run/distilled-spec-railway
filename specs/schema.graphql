@@ -9,6 +9,7 @@ enum ActiveFeatureFlag {
   DEBUG_SMART_DIAGNOSIS
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
+  POSTGRES_VULN_AUTO_UPDATE
   PRIORITY_BOARDING
   PROJECT_SANDBOXES
 }
@@ -945,6 +946,7 @@ input EnableServiceCdnInput {
 
 type Environment implements Node {
   canAccess: Boolean!
+  canvasGroupRefs: JSON!
   config(decryptVariables: Boolean): EnvironmentConfig!
 
   """
