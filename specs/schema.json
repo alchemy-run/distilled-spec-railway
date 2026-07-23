@@ -69,6 +69,12 @@
             "deprecationReason": null
           },
           {
+            "name": "HA_FOR_ALL_TEMPLATES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "IN_DASHBOARD_SUPPORT",
             "description": null,
             "isDeprecated": false,
@@ -177,6 +183,12 @@
           },
           {
             "name": "DEV_STUDIO",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DEV_STUDIO_ANON_PROVISIONS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -25327,18 +25339,6 @@
             "deprecationReason": null
           },
           {
-            "name": "expiresAt",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "DateTime",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "id",
             "description": null,
             "args": [],
@@ -25442,6 +25442,12 @@
           },
           {
             "name": "DEV_STUDIO",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DEV_STUDIO_ANON_PROVISIONS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
