@@ -3,7 +3,6 @@ type AccessRule {
 }
 
 enum ActiveFeatureFlag {
-  AGENT_BYOK
   CHAT_SANDBOX
   CLOUD_AGENTS
   DEBUG_SMART_DIAGNOSIS
@@ -381,6 +380,23 @@ input CliEventTrackInput {
   subCommand: String
   success: Boolean!
   workspaceId: String
+}
+
+input CloudAgentSnapshotInput {
+  harness: String!
+  lastEventKind: String!
+  sessionId: String!
+  state: String!
+  taskId: String
+  terminal: Boolean!
+  updatedAt: String!
+}
+
+input CloudAgentStateReportInput {
+  agents: [CloudAgentSnapshotInput!]!
+  environmentId: String!
+  reportedAt: String!
+  serviceId: String!
 }
 
 type CnameCheck {
@@ -836,6 +852,51 @@ input DisableServiceCdnInput {
 }
 
 scalar DisplayConfig
+
+"""
+A single DNS query resolved for a service (one row per query, not aggregated)
+"""
+type DnsQueryLog {
+  """The IP addresses the name resolved to"""
+  answers: [String!]!
+
+  """
+  Ordered CNAME targets the queried name aliased through before the final answer (empty when the response had no CNAME)
+  """
+  cnameChain: [String!]!
+
+  """The deployment ID"""
+  deploymentId: String!
+
+  """The deployment instance ID"""
+  deploymentInstanceId: String!
+
+  """The domain name that was looked up"""
+  qname: String!
+
+  """The DNS record type queried (A, AAAA, TXT, ...)"""
+  qtype: String!
+
+  """When the query was resolved (ISO timestamp)"""
+  queriedAt: String!
+
+  """Whether the query targeted the internal zone or the public internet"""
+  queryZone: DnsQueryZone!
+
+  """
+  The DNS response code (NOERROR, NXDOMAIN, SERVFAIL, ...) or synthetic TIMEOUT/ERROR when no upstream response was received
+  """
+  rcode: String!
+
+  """The service ID that made the queries"""
+  serviceId: String!
+}
+
+"""Whether a DNS query targeted the internal zone or the public internet"""
+enum DnsQueryZone {
+  external
+  internal
+}
 
 type DockerComposeImport {
   errors: [String!]!
@@ -1685,6 +1746,11 @@ type Mutation {
   """Track events from the Railway CLI"""
   cliEventTrack(input: CliEventTrackInput!): Boolean!
 
+  """
+  Report the current state of the coding agents running in a cloud agent. Called by the agent runtime inside the cloud agent itself.
+  """
+  cloudAgentStateReport(input: CloudAgentStateReportInput!): Boolean!
+
   """Creates a new custom domain."""
   customDomainCreate(input: CustomDomainCreateInput!): CustomDomain!
 
@@ -2148,6 +2214,16 @@ type Mutation {
     input: ServiceInstanceUpdateInput!
     serviceId: String!
   ): Boolean!
+
+  """
+  Dismiss a platform-armed Postgres security update notice and stand down the scheduled redeploy
+  """
+  serviceInstanceVulnRemediationDismiss(environmentId: String!, serviceId: String!): Boolean!
+
+  """
+  Immediately apply a platform-armed Postgres security update (backup + redeploy). Returns the new deployment id.
+  """
+  serviceInstanceVulnRemediationPatchNow(environmentId: String!, serviceId: String!): String!
 
   """Remove the upstream URL from all service instances for this service"""
   serviceRemoveUpstreamUrl(id: String!): Service!
@@ -3471,6 +3547,36 @@ type Query {
 
   """Get all deployments"""
   deployments(after: String, before: String, first: Int, input: DeploymentListInput!, last: Int): QueryDeploymentsConnection!
+
+  """Fetch individual DNS query logs for an environment"""
+  dnsQueryLogs(
+    """Latest date to look for logs after the anchor"""
+    afterDate: String
+
+    """Limit logs returned after the anchor"""
+    afterLimit: Int
+
+    """Target date time to look for logs"""
+    anchorDate: String
+
+    """Oldest date to look for logs before the anchor"""
+    beforeDate: String
+
+    """Limit logs returned before the anchor"""
+    beforeLimit: Int
+
+    """Filter by deployment instance / sandbox ID (optional)"""
+    deploymentInstanceId: String
+    environmentId: String!
+
+    """
+    Filter expression (e.g., @rcode:NXDOMAIN @qtype:A @domain:example.com @status:failed). Prefix a term with - to exclude it; repeat a key to match any of its values
+    """
+    filter: String
+
+    """Filter by service ID (optional)"""
+    serviceId: String
+  ): [DnsQueryLog!]!
 
   """Domain with status"""
   domainStatus(id: String!, projectId: String!): DomainWithStatus! @deprecated(reason: "Use the `status` field within the `domain` query instead")
@@ -5278,6 +5384,36 @@ type Subscription {
     """Limit the number of logs returned (defaults 100, max 5000)"""
     limit: Int
   ): [Log!]!
+
+  """Stream individual DNS query logs for an environment"""
+  dnsQueryLogs(
+    """Latest date to look for logs after the anchor"""
+    afterDate: String
+
+    """Limit logs returned after the anchor"""
+    afterLimit: Int
+
+    """Target date time to look for logs"""
+    anchorDate: String
+
+    """Oldest date to look for logs before the anchor"""
+    beforeDate: String
+
+    """Limit logs returned before the anchor"""
+    beforeLimit: Int
+
+    """Filter by deployment instance / sandbox ID (optional)"""
+    deploymentInstanceId: String
+    environmentId: String!
+
+    """
+    Filter expression (e.g., @rcode:NXDOMAIN @qtype:A @domain:example.com @status:failed). Prefix a term with - to exclude it; repeat a key to match any of its values
+    """
+    filter: String
+
+    """Filter by service ID (optional)"""
+    serviceId: String
+  ): [DnsQueryLog!]!
 
   """Stream logs for a project environment"""
   environmentLogs(
