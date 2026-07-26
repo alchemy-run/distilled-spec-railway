@@ -264,6 +264,12 @@
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "WORKSPACE_MCP_KILLSWITCH",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -26031,6 +26037,12 @@
           },
           {
             "name": "UPDATED_VM_QUERIES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "WORKSPACE_MCP_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
