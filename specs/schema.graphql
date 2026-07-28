@@ -37,9 +37,6 @@ enum ActivePlatformFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  TEMPORAL_CLOUD_DEPLOYS
-  TEMPORAL_CLOUD_DEPLOY_REMOVALS
-  TEMPORAL_CLOUD_VOLUME_BACKUPS
   UPDATED_VM_QUERIES
   WORKSPACE_MCP_KILLSWITCH
 }
@@ -1448,6 +1445,13 @@ type HttpLog {
   upstreamRqDuration: Int!
 }
 
+"""Which HTTP metric an HTTP_METRICS_ITEM widget renders."""
+enum HttpMetricKind {
+  LATENCY
+  REQUESTS
+  STATUS_RATIO
+}
+
 """HTTP metrics grouped by status code."""
 type HttpMetricsByStatusResult {
   """The samples of HTTP metrics for this status code."""
@@ -2752,6 +2756,7 @@ type ObservabilityDashboardItem implements Node {
 }
 
 type ObservabilityDashboardItemConfig {
+  httpMetric: HttpMetricKind
   logsFilter: String
   measurements: [MetricMeasurement!]
   projectUsageProperties: [ProjectUsageProperty!]
@@ -2759,6 +2764,7 @@ type ObservabilityDashboardItemConfig {
 }
 
 input ObservabilityDashboardItemConfigInput {
+  httpMetric: HttpMetricKind
   logsFilter: String
   measurements: [MetricMeasurement!]
   projectUsageProperties: [ProjectUsageProperty!]
@@ -2780,6 +2786,7 @@ type ObservabilityDashboardItemInstance implements Node {
 }
 
 enum ObservabilityDashboardItemType {
+  HTTP_METRICS_ITEM
   PROJECT_USAGE_ITEM
   SERVICE_LOGS_ITEM
   SERVICE_METRICS_ITEM
@@ -2883,9 +2890,6 @@ enum PlatformFeatureFlag {
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
-  TEMPORAL_CLOUD_DEPLOYS
-  TEMPORAL_CLOUD_DEPLOY_REMOVALS
-  TEMPORAL_CLOUD_VOLUME_BACKUPS
   UPDATED_VM_QUERIES
   WORKSPACE_MCP_KILLSWITCH
 }
