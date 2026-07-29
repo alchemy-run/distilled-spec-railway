@@ -45,6 +45,18 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AGENT_BYOK",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "AGENT_CONTEXT_SOURCES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CHAT_SANDBOX",
             "description": null,
             "isDeprecated": false,
@@ -3256,7 +3268,7 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "CloudAgentStateReportInput",
-        "description": null,
+        "description": "State reported by a cloud agent.",
         "fields": null,
         "inputFields": [
           {
@@ -3282,16 +3294,22 @@
             "defaultValue": null
           },
           {
+            "name": "cloudAgentId",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "environmentId",
             "description": null,
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null
           },
@@ -3313,13 +3331,9 @@
             "name": "serviceId",
             "description": null,
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "defaultValue": null
           }
@@ -15150,7 +15164,7 @@
           },
           {
             "name": "cloudAgentStateReport",
-            "description": "Report the current state of the coding agents running in a cloud agent. Called by the agent runtime inside the cloud agent itself.",
+            "description": "Report the current coding-agent session state.",
             "args": [
               {
                 "name": "input",

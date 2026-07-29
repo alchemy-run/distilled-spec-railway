@@ -3,6 +3,8 @@ type AccessRule {
 }
 
 enum ActiveFeatureFlag {
+  AGENT_BYOK
+  AGENT_CONTEXT_SOURCES
   CHAT_SANDBOX
   CLOUD_AGENTS
   DEBUG_SMART_DIAGNOSIS
@@ -390,11 +392,13 @@ input CloudAgentSnapshotInput {
   updatedAt: String!
 }
 
+"""State reported by a cloud agent."""
 input CloudAgentStateReportInput {
   agents: [CloudAgentSnapshotInput!]!
-  environmentId: String!
+  cloudAgentId: String
+  environmentId: String
   reportedAt: String!
-  serviceId: String!
+  serviceId: String
 }
 
 type CnameCheck {
@@ -1751,9 +1755,7 @@ type Mutation {
   """Track events from the Railway CLI"""
   cliEventTrack(input: CliEventTrackInput!): Boolean!
 
-  """
-  Report the current state of the coding agents running in a cloud agent. Called by the agent runtime inside the cloud agent itself.
-  """
+  """Report the current coding-agent session state."""
   cloudAgentStateReport(input: CloudAgentStateReportInput!): Boolean!
 
   """Creates a new custom domain."""
