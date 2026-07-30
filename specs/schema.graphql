@@ -28,6 +28,7 @@ enum ActivePlatformFlag {
   DEFAULT_USAGE_ALERTS
   DEMO_PERCENTAGE_ROLLOUT
   DEPLOYMENT_DIAGNOSIS_KILLSWITCH
+  DEPLOY_SUPERSEDE_ON_PUSH
   DEV_STUDIO
   DEV_STUDIO_ANON_PROVISIONS
   IN_DASHBOARD_SUPPORT
@@ -53,6 +54,7 @@ enum ActiveServiceFeatureFlag {
   PLACEHOLDER
   SKIPPED_BUILDS
   USE_EXPRESS_DEPLOY
+  USE_EXPRESS_PACKSTORE
   USE_VM_RUNTIME
 }
 
@@ -385,7 +387,9 @@ input CliEventTrackInput {
 input CloudAgentSnapshotInput {
   harness: String!
   lastEventKind: String!
+  prompt: String
   sessionId: String!
+  sessionName: String
   state: String!
   taskId: String
   terminal: Boolean!
@@ -2788,7 +2792,10 @@ type ObservabilityDashboardItemInstance implements Node {
 }
 
 enum ObservabilityDashboardItemType {
+  DNS_LOGS_ITEM
+  HTTP_LOGS_ITEM
   HTTP_METRICS_ITEM
+  NETWORK_LOGS_ITEM
   PROJECT_USAGE_ITEM
   SERVICE_LOGS_ITEM
   SERVICE_METRICS_ITEM
@@ -2881,6 +2888,7 @@ enum PlatformFeatureFlag {
   DEFAULT_USAGE_ALERTS
   DEMO_PERCENTAGE_ROLLOUT
   DEPLOYMENT_DIAGNOSIS_KILLSWITCH
+  DEPLOY_SUPERSEDE_ON_PUSH
   DEV_STUDIO
   DEV_STUDIO_ANON_PROVISIONS
   IN_DASHBOARD_SUPPORT
