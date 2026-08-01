@@ -11,6 +11,7 @@ enum ActiveFeatureFlag {
   HA_FOR_ALL_TEMPLATES
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
+  NEW_PEOPLE_PAGE
   POSTGRES_VULN_AUTO_UPDATE
   PRIORITY_BOARDING
   PROJECT_SANDBOXES
@@ -34,6 +35,7 @@ enum ActivePlatformFlag {
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
+  NOTIFICATION_ACCESS_GROUP_FILTERING
   OAUTH_DCR_KILLSWITCH
   REMOVE_DEPLOYMENT_COMPACT
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
@@ -2894,6 +2896,7 @@ enum PlatformFeatureFlag {
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
+  NOTIFICATION_ACCESS_GROUP_FILTERING
   OAUTH_DCR_KILLSWITCH
   REMOVE_DEPLOYMENT_COMPACT
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
@@ -3756,14 +3759,12 @@ type Query {
     """Limit the number of logs returned before the anchor"""
     beforeLimit: Int
     deploymentId: String!
-    endDate: String
 
     """Filter logs using a query syntax"""
     filter: String
 
     """Limit the number of logs returned (defaults 100, max 5000)"""
     limit: Int
-    startDate: String
   ): [HttpLog!]!
 
   """Get HTTP request metrics for a service"""
@@ -6307,6 +6308,11 @@ type Workspace implements Node {
 
   """Whether this workspace has access to guardrails policies."""
   hasGuardrailsAccess: Boolean!
+
+  """
+  Whether this workspace has a signed HIPAA Business Associate Agreement, from either the legacy hasBAA flag or the HIPAA_BAA spend commitment feature.
+  """
+  hasHipaaBAA: Boolean!
   hasSAML: Boolean!
   id: ID!
   identityProviders(after: String, before: String, first: Int, last: Int): WorkspaceIdentityProvidersConnection!
