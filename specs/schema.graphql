@@ -386,6 +386,74 @@ input CliEventTrackInput {
   workspaceId: String
 }
 
+"""A persistent cloud agent for running coding harnesses."""
+type CloudAgent {
+  """Target ID for console or command execution. Null while unavailable."""
+  consoleTargetId: String
+  createdAt: DateTime!
+
+  """
+  The first of the agent machine's public domains. Stable across sleep and wake; returns no endpoints while the machine sleeps.
+  """
+  domain: String
+
+  """
+  Every public domain on the agent's machine, one per port, in the order the machine declared them.
+  """
+  domains: [CloudAgentDomain!]!
+  environmentId: String!
+  id: ID!
+  name: String!
+  projectId: String!
+
+  """
+  Live coding-agent sessions, one entry per session. Retained for 24h after the last report, so a sleeping agent still shows what it was last doing.
+  """
+  sessions: [CloudAgentSnapshot!]!
+  status: CloudAgentStatus!
+}
+
+input CloudAgentCreateInput {
+  environmentId: String!
+  name: String
+  variables: JSON
+}
+
+"""One public domain on an agent's machine."""
+type CloudAgentDomain {
+  """Resolved FQDN."""
+  domain: String!
+
+  """Target port on the workload this domain routes to."""
+  port: Int!
+
+  """Label prefix the machine declared, e.g. app."""
+  prefix: String!
+}
+
+"""The state of one coding agent session in a cloud agent."""
+type CloudAgentSnapshot {
+  harness: String!
+  lastEventKind: String!
+
+  """
+  Truncated first prompt of the session, display-only. Null when the harness never reported one.
+  """
+  prompt: String
+  sessionId: String!
+
+  """
+  Durable console session name the harness ran inside. Null on older VMs that don't report it.
+  """
+  sessionName: String
+
+  """One of: unknown, working, waiting, idle, failed, done."""
+  state: String!
+  taskId: String
+  terminal: Boolean!
+  updatedAt: String!
+}
+
 input CloudAgentSnapshotInput {
   harness: String!
   lastEventKind: String!
@@ -405,6 +473,16 @@ input CloudAgentStateReportInput {
   environmentId: String
   reportedAt: String!
   serviceId: String
+}
+
+"""The current lifecycle state of a cloud agent."""
+enum CloudAgentStatus {
+  CRASHED
+  DELETING
+  FAILED
+  RUNNING
+  SLEEPING
+  STARTING
 }
 
 type CnameCheck {
@@ -1761,8 +1839,22 @@ type Mutation {
   """Track events from the Railway CLI"""
   cliEventTrack(input: CliEventTrackInput!): Boolean!
 
+  """Create a cloud agent."""
+  cloudAgentCreate(input: CloudAgentCreateInput!): CloudAgent!
+
+  """Delete a cloud agent."""
+  cloudAgentDelete(id: ID!): Boolean!
+
+  """
+  Sleep a running cloud agent, keeping its volume. Processes on the machine are terminated; waking re-runs its entrypoint.
+  """
+  cloudAgentSleep(id: ID!): CloudAgent!
+
   """Report the current coding-agent session state."""
   cloudAgentStateReport(input: CloudAgentStateReportInput!): Boolean!
+
+  """Wake a sleeping cloud agent."""
+  cloudAgentWake(id: ID!): CloudAgent!
 
   """Creates a new custom domain."""
   customDomainCreate(input: CustomDomainCreateInput!): CustomDomain!
@@ -1866,6 +1958,11 @@ type Mutation {
     commitMessage: String
     environmentId: String!
     input: JSON!
+
+    """
+    Defaults to true for compatibility. Async-capable clients set false and poll environmentChangeSetApply.
+    """
+    waitForCompletion: Boolean
   ): ChangeSetApplyResult!
 
   """Creates a new environment."""
@@ -3521,6 +3618,26 @@ type Query {
   changelogBlockImage(id: String!): String!
 
   """
+  A cloud agent by ID, within an environment. Null when the agent belongs to another one, so a caller cannot render an agent it has switched away from.
+  """
+  cloudAgent(environmentId: ID!, id: ID!): CloudAgent
+
+  """
+  Shell and exec sessions running on a cloud agent's VM that you can reconnect to. Null if the agent has no running machine.
+  """
+  cloudAgentConsoleSessions(after: String, before: String, cloudAgentId: ID!, first: Int, last: Int): QueryCloudAgentConsoleSessionsConnection
+
+  """Cloud agents in an environment."""
+  cloudAgents(
+    environmentId: ID!
+
+    """
+    Return only the agents that belong to you. By default every agent in the environment is returned, including your teammates'.
+    """
+    mine: Boolean
+  ): [CloudAgent!]!
+
+  """
   Get compliance agreements for a workspace including HIPAA BAA and GDPR DPA status.
   """
   complianceAgreements(workspaceId: String!): ComplianceAgreementsInfo!
@@ -3616,6 +3733,11 @@ type Query {
 
   """Find a single environment"""
   environment(id: String!, projectId: String): Environment!
+
+  """
+  Returns the status or completed result of an asynchronous RailwayChangeSet apply.
+  """
+  environmentChangeSetApply(environmentId: String!, id: String!): ChangeSetApplyResult!
 
   """
   Whether any service in the environment is on legacy static egress (not HA). Used to surface the HA migration banner.
@@ -4260,6 +4382,16 @@ type QueryAuditLogsConnection {
 type QueryAuditLogsConnectionEdge {
   cursor: String!
   node: AuditLog!
+}
+
+type QueryCloudAgentConsoleSessionsConnection {
+  edges: [QueryCloudAgentConsoleSessionsConnectionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type QueryCloudAgentConsoleSessionsConnectionEdge {
+  cursor: String!
+  node: SandboxSession!
 }
 
 type QueryDeploymentEventsConnection {
