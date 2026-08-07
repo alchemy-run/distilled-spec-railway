@@ -3,6 +3,7 @@ type AccessRule {
 }
 
 enum ActiveFeatureFlag {
+  ACCESS_GROUPS
   AGENT_BYOK
   AGENT_CONTEXT_SOURCES
   CHAT_SANDBOX
@@ -11,10 +12,10 @@ enum ActiveFeatureFlag {
   HA_FOR_ALL_TEMPLATES
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
-  NEW_PEOPLE_PAGE
   POSTGRES_VULN_AUTO_UPDATE
   PRIORITY_BOARDING
   PROJECT_SANDBOXES
+  TEMPLATE_CHANGE_SETS
 }
 
 enum ActivePlatformFlag {
@@ -34,8 +35,8 @@ enum ActivePlatformFlag {
   DEV_STUDIO_ANON_PROVISIONS
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
+  LOGS_V2_READS
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
-  NOTIFICATION_ACCESS_GROUP_FILTERING
   OAUTH_DCR_KILLSWITCH
   REMOVE_DEPLOYMENT_COMPACT
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
@@ -2992,8 +2993,8 @@ enum PlatformFeatureFlag {
   DEV_STUDIO_ANON_PROVISIONS
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
+  LOGS_V2_READS
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
-  NOTIFICATION_ACCESS_GROUP_FILTERING
   OAUTH_DCR_KILLSWITCH
   REMOVE_DEPLOYMENT_COMPACT
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
@@ -5859,6 +5860,10 @@ type TemplateDeployPayload {
 
 input TemplateDeployService {
   commit: String
+
+  """
+  Generate a service domain on the service's default port. Merged with serviceDomainPorts.
+  """
   hasDomain: Boolean
   healthcheckPath: String
   id: String!
@@ -5867,10 +5872,16 @@ input TemplateDeployService {
   owner: String
   preDeployCommand: [String!]
   rootDirectory: String
+
+  """Generate a service domain per target port, in addition to hasDomain."""
+  serviceDomainPorts: [Int!]
   serviceIcon: String
   serviceName: String!
   startCommand: String
+
+  """Merged with tcpProxyApplicationPorts."""
   tcpProxyApplicationPort: Int
+  tcpProxyApplicationPorts: [Int!]
   template: String!
   variables: EnvironmentVariables
   volumes: [TemplateVolume!]

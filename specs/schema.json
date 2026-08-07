@@ -45,6 +45,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "ACCESS_GROUPS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "AGENT_BYOK",
             "description": null,
             "isDeprecated": false,
@@ -93,12 +99,6 @@
             "deprecationReason": null
           },
           {
-            "name": "NEW_PEOPLE_PAGE",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "POSTGRES_VULN_AUTO_UPDATE",
             "description": null,
             "isDeprecated": false,
@@ -112,6 +112,12 @@
           },
           {
             "name": "PROJECT_SANDBOXES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "TEMPLATE_CHANGE_SETS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -224,13 +230,13 @@
             "deprecationReason": null
           },
           {
-            "name": "NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT",
+            "name": "LOGS_V2_READS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "NOTIFICATION_ACCESS_GROUP_FILTERING",
+            "name": "NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -26704,13 +26710,13 @@
             "deprecationReason": null
           },
           {
-            "name": "NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT",
+            "name": "LOGS_V2_READS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "NOTIFICATION_ACCESS_GROUP_FILTERING",
+            "name": "NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -52370,7 +52376,7 @@
           },
           {
             "name": "hasDomain",
-            "description": null,
+            "description": "Generate a service domain on the service's default port. Merged with serviceDomainPorts.",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -52461,6 +52467,24 @@
             "defaultValue": null
           },
           {
+            "name": "serviceDomainPorts",
+            "description": "Generate a service domain per target port, in addition to hasDomain.",
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
+            },
+            "defaultValue": null
+          },
+          {
             "name": "serviceIcon",
             "description": null,
             "type": {
@@ -52496,11 +52520,29 @@
           },
           {
             "name": "tcpProxyApplicationPort",
-            "description": null,
+            "description": "Merged with tcpProxyApplicationPorts.",
             "type": {
               "kind": "SCALAR",
               "name": "Int",
               "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "tcpProxyApplicationPorts",
+            "description": null,
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "Int",
+                  "ofType": null
+                }
+              }
             },
             "defaultValue": null
           },
