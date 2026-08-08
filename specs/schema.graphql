@@ -9,9 +9,12 @@ enum ActiveFeatureFlag {
   CHAT_SANDBOX
   CLOUD_AGENTS
   DEBUG_SMART_DIAGNOSIS
+  FIXED_DOMAIN_RADAR_RULES
   HA_FOR_ALL_TEMPLATES
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
+  NEW_PEOPLE_PAGE
+  POSTGRES_MAJOR_UPGRADE
   POSTGRES_VULN_AUTO_UPDATE
   PRIORITY_BOARDING
   PROJECT_SANDBOXES
@@ -33,6 +36,7 @@ enum ActivePlatformFlag {
   DEPLOY_SUPERSEDE_ON_PUSH
   DEV_STUDIO
   DEV_STUDIO_ANON_PROVISIONS
+  FIXED_DOMAIN_RADAR_RULES
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
   LOGS_V2_READS
@@ -470,10 +474,8 @@ input CloudAgentSnapshotInput {
 """State reported by a cloud agent."""
 input CloudAgentStateReportInput {
   agents: [CloudAgentSnapshotInput!]!
-  cloudAgentId: String
-  environmentId: String
+  cloudAgentId: String!
   reportedAt: String!
-  serviceId: String
 }
 
 """The current lifecycle state of a cloud agent."""
@@ -933,6 +935,17 @@ input DeploymentTriggerUpdateInput {
   rootDirectory: String
 }
 
+input DisablePitrForHaClusterInput {
+  """Environment containing the cluster"""
+  environmentId: String!
+
+  """Project containing the cluster (returned in payload)"""
+  projectId: String!
+
+  """Root service of the HA Postgres cluster"""
+  rootServiceId: String!
+}
+
 input DisableServiceCdnInput {
   environmentId: String!
   serviceId: String!
@@ -1045,6 +1058,7 @@ input EdgeCachingConfigInput {
 
 type EdgeConfig {
   caching: EdgeCachingConfig
+  edgeRules: JSON
   enabled: Boolean!
   id: String!
   overrides: JSON!
@@ -1055,6 +1069,12 @@ type EdgeConfig {
 
 input EdgeConfigInput {
   caching: EdgeCachingConfigInput
+}
+
+type EdgeRuleDiagnostic {
+  code: String!
+  message: String!
+  path: String!
 }
 
 type EgressGateway {
@@ -1086,6 +1106,17 @@ type EgressMigrationEnvironmentResult {
 type EgressMigrationResult {
   environments: [EgressMigrationEnvironmentResult!]!
   ips: [EgressGateway!]!
+}
+
+input EnablePitrForHaClusterInput {
+  """Environment containing the cluster"""
+  environmentId: String!
+
+  """Project containing the cluster (returned in payload)"""
+  projectId: String!
+
+  """Root service of the HA Postgres cluster"""
+  rootServiceId: String!
 }
 
 input EnableServiceCdnInput {
@@ -1830,9 +1861,19 @@ type Mutation {
   bucketUpdate(id: String!, input: BucketUpdateInput!): Bucket!
 
   """
+  Terminates a running HA PITR enable/disable workflow and clears the progress snapshot so the UI re-evaluates from the live cluster state. No-ops if no workflow is running.
+  """
+  cancelPitrHaWorkflow(environmentId: String!, rootServiceId: String!): Boolean!
+
+  """
   Merge a canvas layout from one environment into another. Re-computes the merge from current state and applies mutations.
   """
   canvasViewMerge(sourceEnvironmentId: String!, targetEnvironmentId: String!): Boolean!
+
+  """
+  Clears a completed HA PITR workflow progress snapshot so the Backups page can start fresh. In-flight workflows cannot be cleared.
+  """
+  clearPitrHaWorkflowProgress(environmentId: String!, rootServiceId: String!): Boolean!
 
   """Track CLI authentication-attempt outcomes (signup / sign-in funnel)"""
   cliAuthEventTrack(input: CliAuthEventTrackInput!): Boolean!
@@ -1908,6 +1949,11 @@ type Mutation {
   """Updates a deployment trigger."""
   deploymentTriggerUpdate(id: String!, input: DeploymentTriggerUpdateInput!): DeploymentTrigger!
 
+  """
+  Disables PITR on a Postgres-HA cluster via the same rolling workflow as enable: PATCHes Patroni DCS archive_mode=off, restarts replicas one at a time, switches over, restarts the former leader, then strips the WAL_ARCHIVE_* vars. The bucket is left intact so backup history isn't destroyed.
+  """
+  disablePitrForHaCluster(input: DisablePitrForHaClusterInput!): TemplateDeployPayload!
+
   """Disables CDN for a service, soft-deleting the edge config."""
   disableServiceCdn(input: DisableServiceCdnInput!): Boolean!
 
@@ -1942,6 +1988,11 @@ type Mutation {
 
   """Initiate an email change request for a user"""
   emailChangeInitiate(newEmail: String!): Boolean!
+
+  """
+  Enables PITR on a Postgres-HA cluster via a rolling workflow: creates the bucket, writes WAL_ARCHIVE_* vars on every member, ensures Patroni DCS archive_mode=on, restarts replicas one at a time, switches over, then restarts the former leader.
+  """
+  enablePitrForHaCluster(input: EnablePitrForHaClusterInput!): TemplateDeployPayload!
 
   """
   Enables CDN for a service, creating an edge config and attaching all live domains.
@@ -2421,6 +2472,11 @@ type Mutation {
   templatePublish(id: String!, input: TemplatePublishInput!): Template!
 
   """
+  Reverts an HA cluster to standalone mode using template metadata to derive variables to remove
+  """
+  templateRevert(input: TemplateRevertInput!): TemplateDeployPayload!
+
+  """
   Ejects a service from the template and creates a new repo in the provided org.
   """
   templateServiceSourceEject(input: TemplateServiceSourceEjectInput!): Boolean!
@@ -2459,6 +2515,11 @@ type Mutation {
 
   """Updates the edge config (caching settings) for a service."""
   updateServiceEdgeConfig(input: UpdateServiceEdgeConfigInput!): EdgeConfig!
+
+  """
+  Replaces the service's edge rules (whole-section replace; null clears). Rules are boolean expressions over request attributes plus one action (block/allow/challenge/redirect/cache_override), evaluated at the edge before requests reach the service. The ruleset is validated server-side; invalid rulesets are rejected with per-rule diagnostics and nothing is written. Rules without an id get a server-assigned stable `rul_` id.
+  """
+  updateServiceEdgeRules(input: UpdateServiceEdgeRulesInput!): EdgeConfig!
 
   """Generate a Slack channel for a workspace"""
   upsertSlackChannel(workspaceId: String!): Boolean!
@@ -2965,6 +3026,82 @@ type PaymentMethodCard {
   last4: String!
 }
 
+"""
+Live replication health of an HA postgres cluster, probed from patroni on demand. Used to gate the Enable/Disable PITR buttons on the same 'caught up' definition the rolling workflow enforces.
+"""
+type PitrHaClusterReplicationHealth {
+  allHealthy: Boolean!
+  checkedAt: String!
+  environmentId: String!
+  members: [PitrHaMemberReplicationHealth!]!
+  reachable: Boolean!
+  rootServiceId: String!
+}
+
+type PitrHaMemberReplicationHealth {
+  healthy: Boolean!
+  isLeader: Boolean!
+  lagMb: Int
+  patroniName: String
+  serviceId: String!
+  serviceName: String!
+  state: String
+}
+
+enum PitrHaWorkflowDirection {
+  DISABLE
+  ENABLE
+}
+
+type PitrHaWorkflowMemberProgress {
+  isLeader: Boolean!
+  serviceId: String!
+  serviceName: String!
+  status: PitrHaWorkflowMemberStatus!
+}
+
+enum PitrHaWorkflowMemberStatus {
+  HEALTHY
+  PENDING
+  RESTARTING
+  SKIPPED
+}
+
+enum PitrHaWorkflowPhase {
+  CREATING_BUCKET
+  DONE
+  FAILED
+  PATCHING_DCS
+  PLANNING
+  REMOVING_VARIABLES
+  ROLLING_EX_LEADER
+  ROLLING_REPLICAS
+  SWITCHING_OVER
+  VERIFYING
+  WRITING_VARIABLES
+}
+
+"""
+Progress snapshot for an in-flight (or recently completed) HA PITR enable/disable workflow. Persisted in Redis for ~1h and re-emitted on every phase transition over the pitrHaWorkflowProgress subscription.
+"""
+type PitrHaWorkflowProgress {
+  clusterMutated: Boolean!
+  completedAt: String
+  currentMemberServiceId: String
+  direction: PitrHaWorkflowDirection!
+  environmentId: String!
+  errorMessage: String
+  failedAtPhase: PitrHaWorkflowPhase
+  members: [PitrHaWorkflowMemberProgress!]!
+  newLeaderServiceId: String
+  phase: PitrHaWorkflowPhase!
+  projectId: String!
+  rootServiceId: String!
+  startedAt: String!
+  updatedAt: String!
+  workflowId: String!
+}
+
 enum Plan {
   FREE
   HOBBY
@@ -2991,6 +3128,7 @@ enum PlatformFeatureFlag {
   DEPLOY_SUPERSEDE_ON_PUSH
   DEV_STUDIO
   DEV_STUDIO_ANON_PROVISIONS
+  FIXED_DOMAIN_RADAR_RULES
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
   LOGS_V2_READS
@@ -4033,6 +4171,16 @@ type Query {
   """Gets all passkeys for the authenticated user"""
   passkeys(after: String, before: String, first: Int, last: Int): QueryPasskeysConnection!
 
+  """
+  Live replication health for an HA postgres cluster, probed from patroni. Use to gate the Enable/Disable PITR buttons so the user can't start a rollout while a replica is too far behind to rejoin. Returns null when the service isn't an HA root.
+  """
+  pitrHaClusterReplicationHealth(environmentId: String!, rootServiceId: String!): PitrHaClusterReplicationHealth
+
+  """
+  One-shot read of the persisted progress for an HA PITR enable/disable workflow. Use to rehydrate state on page load before connecting to the subscription. Returns null if no workflow has run recently (TTL ~1h).
+  """
+  pitrHaWorkflowProgress(environmentId: String!, rootServiceId: String!): PitrHaWorkflowProgress
+
   """Get the current status of the platform"""
   platformStatus: PlatformStatus!
 
@@ -4309,6 +4457,11 @@ type Query {
 
   """Get all templates for the current user."""
   userTemplates(after: String, before: String, first: Int, last: Int): QueryUserTemplatesConnection! @deprecated(reason: "Users don't have personal templates anymore, they belong to their team now")
+
+  """
+  Validates an edge ruleset without writing it — returns the same diagnostics updateServiceEdgeRules would reject with (empty list = valid). For live feedback in rule editors.
+  """
+  validateServiceEdgeRules(input: ValidateServiceEdgeRulesInput!): [EdgeRuleDiagnostic!]!
 
   """
   All variables by pluginId or serviceId. If neither are provided, all shared variables are returned.
@@ -5889,8 +6042,18 @@ input TemplateDeployService {
 
 input TemplateDeployV2Input {
   environmentId: String
+
+  """
+  Use an existing service as the cluster root instead of creating a new one. Used for HA cluster conversion where an existing postgres becomes the primary.
+  """
+  existingRootServiceId: String
   projectId: String
   serializedConfig: SerializedTemplateConfig!
+
+  """
+  If true, create resources and patch but don't deploy. Returns patchId for later commit.
+  """
+  stageOnly: Boolean
   templateId: String!
   workspaceId: String
 }
@@ -5926,6 +6089,26 @@ input TemplatePublishInput {
   image: String
   readme: String!
   workspaceId: String
+}
+
+input TemplateRevertInput {
+  """The environment ID containing the cluster"""
+  environmentId: String!
+
+  """The group ID to delete when reverting"""
+  groupId: String
+
+  """The project ID containing the cluster"""
+  projectId: String!
+
+  """The root service ID of the HA cluster to revert"""
+  rootServiceId: String!
+
+  """If true, stage changes instead of deploying. Returns patchId."""
+  stageOnly: Boolean
+
+  """The template code to revert (e.g., 'ha-postgres')"""
+  templateCode: String!
 }
 
 type TemplateSearchResult {
@@ -6039,6 +6222,12 @@ input UpdateNotificationRuleInput {
 
 input UpdateServiceEdgeConfigInput {
   config: EdgeConfigInput!
+  environmentId: String!
+  serviceId: String!
+}
+
+input UpdateServiceEdgeRulesInput {
+  edgeRules: JSON
   environmentId: String!
   serviceId: String!
 }
@@ -6174,6 +6363,12 @@ type UserProviderAuthsConnection {
 type UserProviderAuthsConnectionEdge {
   cursor: String!
   node: ProviderAuth!
+}
+
+input ValidateServiceEdgeRulesInput {
+  edgeRules: JSON!
+  environmentId: String!
+  serviceId: String!
 }
 
 type Variable implements Node {
