@@ -2597,11 +2597,21 @@ type Mutation {
 
   """Restore a volume instance from a backup"""
   volumeInstanceBackupRestore(
+    """
+    Optional: for HA cluster restores, service IDs of replicas that should also receive the backup
+    """
+    replicaServiceIds: [String!]
+
     """The id of the backup to be restored from"""
     volumeInstanceBackupId: String!
 
     """The id of the volume instance to be restored from"""
     volumeInstanceId: String!
+
+    """
+    Service IDs whose volumes should be wiped (replaced with fresh empty volumes) as part of this restore
+    """
+    wipeServiceIds: [String!]
   ): WorkflowId!
 
   """Manage schedule for backups of a volume instance"""

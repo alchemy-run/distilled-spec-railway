@@ -22939,6 +22939,24 @@
             "description": "Restore a volume instance from a backup",
             "args": [
               {
+                "name": "replicaServiceIds",
+                "description": "Optional: for HA cluster restores, service IDs of replicas that should also receive the backup",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
+                  }
+                },
+                "defaultValue": null
+              },
+              {
                 "name": "volumeInstanceBackupId",
                 "description": "The id of the backup to be restored from",
                 "type": {
@@ -22962,6 +22980,24 @@
                     "kind": "SCALAR",
                     "name": "String",
                     "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "wipeServiceIds",
+                "description": "Service IDs whose volumes should be wiped (replaced with fresh empty volumes) as part of this restore",
+                "type": {
+                  "kind": "LIST",
+                  "name": null,
+                  "ofType": {
+                    "kind": "NON_NULL",
+                    "name": null,
+                    "ofType": {
+                      "kind": "SCALAR",
+                      "name": "String",
+                      "ofType": null
+                    }
                   }
                 },
                 "defaultValue": null
