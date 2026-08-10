@@ -4136,6 +4136,11 @@ type Query {
     workspaceId: String
   ): [MetricsResult!]!
 
+  """
+  Cloud agents you own, across every project and environment you can reach. Answers "where are my agents" in one request; `cloudAgents` needs one call per environment. Machine fields (`status`, `domain`, `domains`) read the last observed state in batched queries, so selecting them across many environments is fine.
+  """
+  myCloudAgents: [CloudAgent!]!
+
   """Fetch individual network flow logs for an environment"""
   networkFlowLogs(
     """Latest date to look for logs after the anchor"""
