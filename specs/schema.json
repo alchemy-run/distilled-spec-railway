@@ -151,6 +151,12 @@
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "TEMPLATE_CHAT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "possibleTypes": null
@@ -243,6 +249,12 @@
           },
           {
             "name": "DEV_STUDIO_ANON_PROVISIONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DOMAIN_PURCHASE_VELOCITY_LIMIT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -27827,6 +27839,12 @@
           },
           {
             "name": "DEV_STUDIO_ANON_PROVISIONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DOMAIN_PURCHASE_VELOCITY_LIMIT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
