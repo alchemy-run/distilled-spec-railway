@@ -99,6 +99,12 @@
             "deprecationReason": null
           },
           {
+            "name": "HA_FOR_MYSQL",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "HA_FOR_REDIS",
             "description": null,
             "isDeprecated": false,
@@ -153,13 +159,13 @@
             "deprecationReason": null
           },
           {
-            "name": "TEMPLATE_CHANGE_SETS",
+            "name": "TEMPLATE_CHAT",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "TEMPLATE_CHAT",
+            "name": "VM_STORAGE_TRACES",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -279,6 +285,12 @@
           },
           {
             "name": "KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "LOGS_LONG_WINDOW_CHUNKING",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -415,12 +427,6 @@
           },
           {
             "name": "SKIPPED_BUILDS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "USE_EXPRESS_DEPLOY",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1940,6 +1946,18 @@
                 "name": "String",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "parentServiceId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -27886,6 +27904,12 @@
             "deprecationReason": null
           },
           {
+            "name": "LOGS_LONG_WINDOW_CHUNKING",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "LOGS_V2_ENVIRONMENT_DARK_READS",
             "description": null,
             "isDeprecated": false,
@@ -46422,6 +46446,16 @@
           {
             "name": "name",
             "description": "Boot from a saved checkpoint with this name (one captured from a sandbox). Mutually exclusive with instructions.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "region",
+            "description": "Placement region for the build sandbox. The resulting checkpoint lives in this region, and sandboxes created from the template boot there. Defaults to the platform default; only the cold build consults it (a built template's own region wins).",
             "type": {
               "kind": "SCALAR",
               "name": "String",

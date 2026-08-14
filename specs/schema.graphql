@@ -12,6 +12,7 @@ enum ActiveFeatureFlag {
   EDGE_RULES
   FIXED_DOMAIN_RADAR_RULES
   HA_FOR_ALL_TEMPLATES
+  HA_FOR_MYSQL
   HA_FOR_REDIS
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
@@ -21,8 +22,8 @@ enum ActiveFeatureFlag {
   PRIORITY_BOARDING
   PROJECT_SANDBOXES
   SANDBOX_FACTORY_VM
-  TEMPLATE_CHANGE_SETS
   TEMPLATE_CHAT
+  VM_STORAGE_TRACES
 }
 
 enum ActivePlatformFlag {
@@ -44,6 +45,7 @@ enum ActivePlatformFlag {
   FIXED_DOMAIN_RADAR_RULES
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
+  LOGS_LONG_WINDOW_CHUNKING
   LOGS_V2_ENVIRONMENT_DARK_READS
   LOGS_V2_ENVIRONMENT_READS
   LOGS_V2_FILTERED_READS
@@ -69,7 +71,6 @@ enum ActiveServiceFeatureFlag {
   ENABLE_DOCKER_EXTENSION
   PLACEHOLDER
   SKIPPED_BUILDS
-  USE_EXPRESS_DEPLOY
   USE_EXPRESS_PACKSTORE
   USE_VM_RUNTIME
 }
@@ -238,6 +239,7 @@ type Bucket implements Node {
   groupId: String
   id: ID!
   name: String!
+  parentServiceId: String
   project: Project!
   projectId: String!
   updatedAt: DateTime!
@@ -3151,6 +3153,7 @@ enum PlatformFeatureFlag {
   FIXED_DOMAIN_RADAR_RULES
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
+  LOGS_LONG_WINDOW_CHUNKING
   LOGS_V2_ENVIRONMENT_DARK_READS
   LOGS_V2_ENVIRONMENT_READS
   LOGS_V2_FILTERED_READS
@@ -5206,6 +5209,11 @@ input SandboxTemplateInput {
   Boot from a saved checkpoint with this name (one captured from a sandbox). Mutually exclusive with instructions.
   """
   name: String
+
+  """
+  Placement region for the build sandbox. The resulting checkpoint lives in this region, and sandboxes created from the template boot there. Defaults to the platform default; only the cold build consults it (a built template's own region wins).
+  """
+  region: String
 
   """
   Environment variables available to the template's build instructions. Values may contain Railway variable references (e.g. ${{shared.FOO}}, ${{ServiceName.BAR}}), resolved at build time.
