@@ -57,7 +57,7 @@
             "deprecationReason": null
           },
           {
-            "name": "AGENT_CONTEXT_SOURCES",
+            "name": "AGENT_CONNECTORS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -1902,6 +1902,18 @@
                 "name": "DateTime",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "deletedAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null

@@ -5,7 +5,7 @@ type AccessRule {
 enum ActiveFeatureFlag {
   ACCESS_GROUPS
   AGENT_BYOK
-  AGENT_CONTEXT_SOURCES
+  AGENT_CONNECTORS
   CHAT_SANDBOX
   CLOUD_AGENTS
   DEBUG_SMART_DIAGNOSIS
@@ -236,6 +236,7 @@ type BotScopeBindingInfo {
 
 type Bucket implements Node {
   createdAt: DateTime!
+  deletedAt: DateTime
   groupId: String
   id: ID!
   name: String!
