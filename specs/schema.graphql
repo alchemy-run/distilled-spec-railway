@@ -424,6 +424,11 @@ type CloudAgent {
   projectId: String!
 
   """
+  Region the agent's machine runs in. Null briefly after creation, before the machine has been placed.
+  """
+  region: String
+
+  """
   Live coding-agent sessions, one entry per session. Retained for 24h after the last report, so a sleeping agent still shows what it was last doing.
   """
   sessions: [CloudAgentSnapshot!]!
@@ -433,6 +438,11 @@ type CloudAgent {
 input CloudAgentCreateInput {
   environmentId: String!
   name: String
+
+  """
+  Region to run the agent in, e.g. us-west2. Defaults to the workspace's preferred region when agents are available there.
+  """
+  region: String
   variables: JSON
 }
 
