@@ -87,12 +87,6 @@
             "deprecationReason": null
           },
           {
-            "name": "FIXED_DOMAIN_RADAR_RULES",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "HA_FOR_ALL_TEMPLATES",
             "description": null,
             "isDeprecated": false,
@@ -272,7 +266,7 @@
             "deprecationReason": null
           },
           {
-            "name": "FIXED_DOMAIN_RADAR_RULES",
+            "name": "DOMAIN_RADAR_TRIGGER",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -27920,7 +27914,7 @@
             "deprecationReason": null
           },
           {
-            "name": "FIXED_DOMAIN_RADAR_RULES",
+            "name": "DOMAIN_RADAR_TRIGGER",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
