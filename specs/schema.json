@@ -75,6 +75,12 @@
             "deprecationReason": null
           },
           {
+            "name": "CLOUD_AGENT_CHAT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "DEBUG_SMART_DIAGNOSIS",
             "description": null,
             "isDeprecated": false,
@@ -112,6 +118,12 @@
           },
           {
             "name": "MAGIC_CONFIG",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "MYSQL_PITR",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -363,6 +375,12 @@
           },
           {
             "name": "UPDATED_VM_QUERIES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "WORKSPACE_BAN_SINGLE_WRITER",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -3297,6 +3315,18 @@
         "name": "CloudAgent",
         "description": "A persistent cloud agent for running coding harnesses.",
         "fields": [
+          {
+            "name": "agentWsUrl",
+            "description": "WebSocket endpoint of the in-VM harness gate, for the dashboard chat. Survives sleep: the domain is stable across sleep and wake, and the observation keeps it. Null only on agents created before the gate existed, or before their first observation lands.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
           {
             "name": "consoleTargetId",
             "description": "Target ID for console or command execution. Null while unavailable.",
@@ -16123,6 +16153,51 @@
             "deprecationReason": null
           },
           {
+            "name": "cloudAgentHarnessToken",
+            "description": "Mint a short-lived (5m) JWT for the agent's harness WebSocket (see agentWsUrl). The in-VM gate verifies signature/exp/aud and pins it to this agent. Mint one per dial; the token only has to survive the upgrade.",
+            "args": [
+              {
+                "name": "environmentId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "id",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "cloudAgentSleep",
             "description": "Sleep a running cloud agent, keeping its volume. Processes on the machine are terminated; waking re-runs its entrypoint.",
             "args": [
@@ -23170,7 +23245,7 @@
           },
           {
             "name": "volumeInstancePITRRestore",
-            "description": "Point-in-time restore. Creates a brand-new Postgres service in the project. The image populates the new service's volume from the source bucket via `pgbackrest restore --type=time --target=<T>` on first boot, replays WAL forward, and promotes. Source service stays online and untouched.",
+            "description": "Point-in-time restore. Creates a brand-new database service in the project. The image populates the new service's volume from the source bucket on first boot (e.g. `pgbackrest restore --type=time` for Postgres, full-backup restore plus binlog replay for MySQL) and recovers to the target. Source service stays online and untouched.",
             "args": [
               {
                 "name": "newServiceName",
@@ -28011,6 +28086,12 @@
           },
           {
             "name": "UPDATED_VM_QUERIES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "WORKSPACE_BAN_SINGLE_WRITER",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

@@ -8,6 +8,7 @@ enum ActiveFeatureFlag {
   AGENT_CONNECTORS
   CHAT_SANDBOX
   CLOUD_AGENTS
+  CLOUD_AGENT_CHAT
   DEBUG_SMART_DIAGNOSIS
   EDGE_RULES
   HA_FOR_ALL_TEMPLATES
@@ -15,6 +16,7 @@ enum ActiveFeatureFlag {
   HA_FOR_REDIS
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
+  MYSQL_PITR
   NEW_PEOPLE_PAGE
   POSTGRES_MAJOR_UPGRADE
   POSTGRES_VULN_AUTO_UPDATE
@@ -58,6 +60,7 @@ enum ActivePlatformFlag {
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
+  WORKSPACE_BAN_SINGLE_WRITER
   WORKSPACE_MCP_KILLSWITCH
 }
 
@@ -404,6 +407,11 @@ input CliEventTrackInput {
 
 """A persistent cloud agent for running coding harnesses."""
 type CloudAgent {
+  """
+  WebSocket endpoint of the in-VM harness gate, for the dashboard chat. Survives sleep: the domain is stable across sleep and wake, and the observation keeps it. Null only on agents created before the gate existed, or before their first observation lands.
+  """
+  agentWsUrl: String
+
   """Target ID for console or command execution. Null while unavailable."""
   consoleTargetId: String
   createdAt: DateTime!
@@ -1909,6 +1917,11 @@ type Mutation {
   cloudAgentDelete(id: ID!): Boolean!
 
   """
+  Mint a short-lived (5m) JWT for the agent's harness WebSocket (see agentWsUrl). The in-VM gate verifies signature/exp/aud and pins it to this agent. Mint one per dial; the token only has to survive the upgrade.
+  """
+  cloudAgentHarnessToken(environmentId: String!, id: ID!): String!
+
+  """
   Sleep a running cloud agent, keeping its volume. Processes on the machine are terminated; waking re-runs its entrypoint.
   """
   cloudAgentSleep(id: ID!): CloudAgent!
@@ -2645,7 +2658,7 @@ type Mutation {
   ): Boolean!
 
   """
-  Point-in-time restore. Creates a brand-new Postgres service in the project. The image populates the new service's volume from the source bucket via `pgbackrest restore --type=time --target=<T>` on first boot, replays WAL forward, and promotes. Source service stays online and untouched.
+  Point-in-time restore. Creates a brand-new database service in the project. The image populates the new service's volume from the source bucket on first boot (e.g. `pgbackrest restore --type=time` for Postgres, full-backup restore plus binlog replay for MySQL) and recovers to the target. Source service stays online and untouched.
   """
   volumeInstancePITRRestore(
     """
@@ -3177,6 +3190,7 @@ enum PlatformFeatureFlag {
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
+  WORKSPACE_BAN_SINGLE_WRITER
   WORKSPACE_MCP_KILLSWITCH
 }
 
