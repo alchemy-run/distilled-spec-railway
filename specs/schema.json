@@ -284,6 +284,12 @@
             "deprecationReason": null
           },
           {
+            "name": "DOMAIN_RECONCILE_KILLSWITCH",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "IN_DASHBOARD_SUPPORT",
             "description": null,
             "isDeprecated": false,
@@ -297,30 +303,6 @@
           },
           {
             "name": "LOGS_LONG_WINDOW_CHUNKING",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "LOGS_V2_ENVIRONMENT_DARK_READS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "LOGS_V2_ENVIRONMENT_READS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "LOGS_V2_FILTERED_READS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "LOGS_V2_READS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -27995,6 +27977,12 @@
             "deprecationReason": null
           },
           {
+            "name": "DOMAIN_RECONCILE_KILLSWITCH",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "IN_DASHBOARD_SUPPORT",
             "description": null,
             "isDeprecated": false,
@@ -28008,30 +27996,6 @@
           },
           {
             "name": "LOGS_LONG_WINDOW_CHUNKING",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "LOGS_V2_ENVIRONMENT_DARK_READS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "LOGS_V2_ENVIRONMENT_READS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "LOGS_V2_FILTERED_READS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "LOGS_V2_READS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
