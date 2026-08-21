@@ -87,12 +87,6 @@
             "deprecationReason": null
           },
           {
-            "name": "EDGE_RULES",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "HA_FOR_ALL_TEMPLATES",
             "description": null,
             "isDeprecated": false,
@@ -159,12 +153,6 @@
             "deprecationReason": null
           },
           {
-            "name": "SANDBOX_FACTORY_VM",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "TEMPLATE_CHAT",
             "description": null,
             "isDeprecated": false,
@@ -189,12 +177,6 @@
         "enumValues": [
           {
             "name": "ALERT_SUS_USERS_CRON_KILLSWITCH",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "BAN_APPEAL_FORM",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -321,12 +303,6 @@
           },
           {
             "name": "REMOVE_DEPLOYMENT_COMPACT",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "SANDBOX_FACTORY_VM",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -3474,6 +3450,18 @@
             "deprecationReason": null
           },
           {
+            "name": "source",
+            "description": "Repo this agent's workspace was created from. Null for agents created without a source.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CloudAgentSource",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "status",
             "description": null,
             "args": [],
@@ -3531,6 +3519,16 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "source",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CloudAgentSourceInput",
               "ofType": null
             },
             "defaultValue": null
@@ -3875,6 +3873,139 @@
         ],
         "interfaces": null,
         "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CloudAgentSource",
+        "description": "Workspace provenance: the GitHub repo cloned into the agent's workspace at create time.",
+        "fields": [
+          {
+            "name": "branch",
+            "description": "Requested ref; null = the repo's default branch.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "repo",
+            "description": "owner/repo.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "serviceId",
+            "description": "Service the repo was resolved from, when given.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "Clone progress. Failed never blocks the agent; only CLONING should hold a launch.",
+            "args": [],
+            "type": {
+              "kind": "ENUM",
+              "name": "CloudAgentSourceStatus",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CloudAgentSourceInput",
+        "description": "Repo to clone into the agent's workspace: exactly one of repo/serviceId.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "branch",
+            "description": "Ref to check out; defaults to the repo's default branch.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "repo",
+            "description": "GitHub repo as owner/repo.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "serviceId",
+            "description": "Resolve the repo from this service's connected source.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "CloudAgentSourceStatus",
+        "description": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "CLONING",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "FAILED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "READY",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "possibleTypes": null
       },
       {
@@ -27887,12 +28018,6 @@
             "deprecationReason": null
           },
           {
-            "name": "BAN_APPEAL_FORM",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "BUILD_DEPLOY_QUEUE_V2",
             "description": null,
             "isDeprecated": false,
@@ -28014,12 +28139,6 @@
           },
           {
             "name": "REMOVE_DEPLOYMENT_COMPACT",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "SANDBOX_FACTORY_VM",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

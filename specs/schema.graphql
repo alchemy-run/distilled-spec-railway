@@ -10,7 +10,6 @@ enum ActiveFeatureFlag {
   CLOUD_AGENTS
   CLOUD_AGENT_CHAT
   DEBUG_SMART_DIAGNOSIS
-  EDGE_RULES
   HA_FOR_ALL_TEMPLATES
   HA_FOR_MYSQL
   HA_FOR_REDIS
@@ -22,14 +21,12 @@ enum ActiveFeatureFlag {
   POSTGRES_VULN_AUTO_UPDATE
   PRIORITY_BOARDING
   PROJECT_SANDBOXES
-  SANDBOX_FACTORY_VM
   TEMPLATE_CHAT
   VM_STORAGE_TRACES
 }
 
 enum ActivePlatformFlag {
   ALERT_SUS_USERS_CRON_KILLSWITCH
-  BAN_APPEAL_FORM
   BUILD_DEPLOY_QUEUE_V2
   CANVAS_CROSS_ENV_GUARD_ENFORCE
   CHAT_SANDBOX
@@ -51,7 +48,6 @@ enum ActivePlatformFlag {
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
   OAUTH_DCR_KILLSWITCH
   REMOVE_DEPLOYMENT_COMPACT
-  SANDBOX_FACTORY_VM
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
@@ -436,6 +432,11 @@ type CloudAgent {
   Live coding-agent sessions, one entry per session. Retained for 24h after the last report, so a sleeping agent still shows what it was last doing.
   """
   sessions: [CloudAgentSnapshot!]!
+
+  """
+  Repo this agent's workspace was created from. Null for agents created without a source.
+  """
+  source: CloudAgentSource
   status: CloudAgentStatus!
 }
 
@@ -447,6 +448,7 @@ input CloudAgentCreateInput {
   Region to run the agent in, e.g. us-west2. Defaults to the workspace's preferred region when agents are available there.
   """
   region: String
+  source: CloudAgentSourceInput
   variables: JSON
 }
 
@@ -495,6 +497,45 @@ input CloudAgentSnapshotInput {
   taskId: String
   terminal: Boolean!
   updatedAt: String!
+}
+
+"""
+Workspace provenance: the GitHub repo cloned into the agent's workspace at create time.
+"""
+type CloudAgentSource {
+  """Requested ref; null = the repo's default branch."""
+  branch: String
+
+  """owner/repo."""
+  repo: String!
+
+  """Service the repo was resolved from, when given."""
+  serviceId: String
+
+  """
+  Clone progress. Failed never blocks the agent; only CLONING should hold a launch.
+  """
+  status: CloudAgentSourceStatus
+}
+
+"""
+Repo to clone into the agent's workspace: exactly one of repo/serviceId.
+"""
+input CloudAgentSourceInput {
+  """Ref to check out; defaults to the repo's default branch."""
+  branch: String
+
+  """GitHub repo as owner/repo."""
+  repo: String
+
+  """Resolve the repo from this service's connected source."""
+  serviceId: String
+}
+
+enum CloudAgentSourceStatus {
+  CLONING
+  FAILED
+  READY
 }
 
 """State reported by a cloud agent."""
@@ -3156,7 +3197,6 @@ type PlanLimitOverride implements Node {
 
 enum PlatformFeatureFlag {
   ALERT_SUS_USERS_CRON_KILLSWITCH
-  BAN_APPEAL_FORM
   BUILD_DEPLOY_QUEUE_V2
   CANVAS_CROSS_ENV_GUARD_ENFORCE
   CHAT_SANDBOX
@@ -3178,7 +3218,6 @@ enum PlatformFeatureFlag {
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
   OAUTH_DCR_KILLSWITCH
   REMOVE_DEPLOYMENT_COMPACT
-  SANDBOX_FACTORY_VM
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
   STRIPE_METERS_NEW_ACCOUNTS
