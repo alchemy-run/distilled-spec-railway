@@ -63,6 +63,12 @@
             "deprecationReason": null
           },
           {
+            "name": "AGENT_USAGE_WARNINGS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CHAT_SANDBOX",
             "description": null,
             "isDeprecated": false,
@@ -94,12 +100,6 @@
           },
           {
             "name": "HA_FOR_MYSQL",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "HA_FOR_REDIS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -176,6 +176,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AGENT_USAGE_WARNINGS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ALERT_SUS_USERS_CRON_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
@@ -183,6 +189,12 @@
           },
           {
             "name": "BUILD_DEPLOY_QUEUE_V2",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CAC_T0_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -315,6 +327,12 @@
           },
           {
             "name": "SPLIT_USAGE_QUERIES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STRIPE_AUTOMATIC_TAX",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -10132,6 +10150,18 @@
                 "name": "EnvironmentDeploymentsConnection",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "iacPartials",
+            "description": "IaC resource address → partial name for this environment. '*' is the whole-project owner. Used so omit=delete only applies to resources this file already owns.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "JSON",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -28012,6 +28042,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AGENT_USAGE_WARNINGS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "ALERT_SUS_USERS_CRON_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
@@ -28019,6 +28055,12 @@
           },
           {
             "name": "BUILD_DEPLOY_QUEUE_V2",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CAC_T0_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -28151,6 +28193,12 @@
           },
           {
             "name": "SPLIT_USAGE_QUERIES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STRIPE_AUTOMATIC_TAX",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -45766,6 +45814,117 @@
       },
       {
         "kind": "OBJECT",
+        "name": "ResolvedFileConfig",
+        "description": "The repo config file as of the most recent deployment that read it.",
+        "fields": [
+          {
+            "name": "commitHash",
+            "description": "Commit the config was read from.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "configFile",
+            "description": "Path of the config file that was read, or null when the repo has none.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "deploymentId",
+            "description": "Deployment this config was read from.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "fileManifest",
+            "description": "Manifest parsed from the config file. Empty means the repo has no config file.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "JSON",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "propertyFileMapping",
+            "description": "Manifest property path to its location within the config file.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "JSON",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "repo",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "resolvedAt",
+            "description": "When that deployment was created. Surface this when it is older than the latest deployment, so a stale config is not presented as current.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "DateTime",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "ResourceAccess",
         "description": null,
         "fields": [
@@ -48174,6 +48333,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "resolvedFileConfig",
+            "description": "Config read from the repo's config file, taken from the most recent deployment that actually read it. Null when no deployment has resolved a config file yet. An empty `fileManifest` is a real answer and means the repo has no config file — do not read this off the latest deployment instead, since a deployment whose snapshot never completed carries no file config at all and is not the same as a repo without one.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ResolvedFileConfig",
               "ofType": null
             },
             "isDeprecated": false,

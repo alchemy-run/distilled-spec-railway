@@ -6,13 +6,13 @@ enum ActiveFeatureFlag {
   ACCESS_GROUPS
   AGENT_BYOK
   AGENT_CONNECTORS
+  AGENT_USAGE_WARNINGS
   CHAT_SANDBOX
   CLOUD_AGENTS
   CLOUD_AGENT_CHAT
   DEBUG_SMART_DIAGNOSIS
   HA_FOR_ALL_TEMPLATES
   HA_FOR_MYSQL
-  HA_FOR_REDIS
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
   MYSQL_PITR
@@ -26,8 +26,10 @@ enum ActiveFeatureFlag {
 }
 
 enum ActivePlatformFlag {
+  AGENT_USAGE_WARNINGS
   ALERT_SUS_USERS_CRON_KILLSWITCH
   BUILD_DEPLOY_QUEUE_V2
+  CAC_T0_KILLSWITCH
   CANVAS_CROSS_ENV_GUARD_ENFORCE
   CHAT_SANDBOX
   CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
@@ -50,6 +52,7 @@ enum ActivePlatformFlag {
   REMOVE_DEPLOYMENT_COMPACT
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
+  STRIPE_AUTOMATIC_TAX
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
@@ -1205,6 +1208,11 @@ type Environment implements Node {
   deletedAt: DateTime
   deploymentTriggers(after: String, before: String, first: Int, last: Int): EnvironmentDeploymentTriggersConnection!
   deployments(after: String, before: String, first: Int, last: Int): EnvironmentDeploymentsConnection!
+
+  """
+  IaC resource address → partial name for this environment. '*' is the whole-project owner. Used so omit=delete only applies to resources this file already owns.
+  """
+  iacPartials: JSON
   id: ID!
   isEphemeral: Boolean!
   meta: EnvironmentMeta
@@ -3196,8 +3204,10 @@ type PlanLimitOverride implements Node {
 }
 
 enum PlatformFeatureFlag {
+  AGENT_USAGE_WARNINGS
   ALERT_SUS_USERS_CRON_KILLSWITCH
   BUILD_DEPLOY_QUEUE_V2
+  CAC_T0_KILLSWITCH
   CANVAS_CROSS_ENV_GUARD_ENFORCE
   CHAT_SANDBOX
   CLICKHOUSE_WORKSPACE_LIMIT_ENFORCE
@@ -3220,6 +3230,7 @@ enum PlatformFeatureFlag {
   REMOVE_DEPLOYMENT_COMPACT
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
+  STRIPE_AUTOMATIC_TAX
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
@@ -5100,6 +5111,32 @@ input ResetPluginInput {
   environmentId: String!
 }
 
+"""The repo config file as of the most recent deployment that read it."""
+type ResolvedFileConfig {
+  """Commit the config was read from."""
+  commitHash: String
+
+  """Path of the config file that was read, or null when the repo has none."""
+  configFile: String
+
+  """Deployment this config was read from."""
+  deploymentId: String!
+
+  """
+  Manifest parsed from the config file. Empty means the repo has no config file.
+  """
+  fileManifest: JSON!
+
+  """Manifest property path to its location within the config file."""
+  propertyFileMapping: JSON!
+  repo: String
+
+  """
+  When that deployment was created. Surface this when it is older than the latest deployment, so a stale config is not presented as current.
+  """
+  resolvedAt: DateTime!
+}
+
 type ResourceAccess {
   deployment: AccessRule!
   project: AccessRule!
@@ -5438,6 +5475,11 @@ type ServiceInstance implements Node {
   railpackInfo: RailpackInfo
   railwayConfigFile: String
   region: String
+
+  """
+  Config read from the repo's config file, taken from the most recent deployment that actually read it. Null when no deployment has resolved a config file yet. An empty `fileManifest` is a real answer and means the repo has no config file — do not read this off the latest deployment instead, since a deployment whose snapshot never completed carries no file config at all and is not the same as a repo without one.
+  """
+  resolvedFileConfig: ResolvedFileConfig
   restartPolicyMaxRetries: Int!
   restartPolicyType: RestartPolicyType!
   rootDirectory: String
