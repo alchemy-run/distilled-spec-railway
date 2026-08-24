@@ -206,6 +206,17 @@ input AuditLogFilterInput {
   startDate: DateTime
 }
 
+input AutoUpdateScheduleWindowInput {
+  """UTC weekday: 0 (Sunday) through 6 (Saturday)"""
+  day: Int!
+
+  """UTC hour the window closes (exclusive), 1-24"""
+  endHour: Int!
+
+  """UTC hour the window opens (inclusive), 0-23"""
+  startHour: Int!
+}
+
 input BaseEnvironmentOverrideInput {
   baseEnvironmentOverrideId: String
 }
@@ -2434,6 +2445,37 @@ type Mutation {
 
   """Enables or disables auto-deploy for a service instance."""
   serviceInstanceAutoDeployUpdate(input: ServiceInstanceAutoDeployUpdateInput!): ServiceInstanceAutoDeployUpdateResult!
+
+  """
+  Update the auto-update maintenance window for a service instance, applied immediately (no config staging, no redeploy). Only the schedule changes — the update policy is untouched.
+  """
+  serviceInstanceAutoUpdateScheduleUpdate(
+    environmentId: String!
+
+    """
+    The full replacement set of weekly UTC maintenance windows (at least one)
+    """
+    schedule: [AutoUpdateScheduleWindowInput!]!
+    serviceId: String!
+  ): Boolean!
+
+  """
+  Skip the next scheduled auto-update occurrence for a service instance, applied immediately (no config staging, no redeploy). The recurring maintenance window and update policy are untouched — this only delays the next fire.
+  """
+  serviceInstanceAutoUpdateSnooze(
+    environmentId: String!
+    serviceId: String!
+
+    """
+    How many days to skip, from now (default 7 — covers any weekly schedule shape). Between 1 and 14.
+    """
+    snoozeDays: Int
+  ): Boolean!
+
+  """
+  Undo an active auto-update skip for a service instance, applied immediately (no config staging, no redeploy). The recurring maintenance window and update policy are untouched — the next scheduled occurrence fires normally again.
+  """
+  serviceInstanceAutoUpdateSnoozeClear(environmentId: String!, serviceId: String!): Boolean!
 
   """Deploy a service instance"""
   serviceInstanceDeploy(commitSha: String, environmentId: String!, latestCommit: Boolean, serviceId: String!): Boolean!
