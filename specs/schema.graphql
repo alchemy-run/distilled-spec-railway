@@ -1,3 +1,81 @@
+type AccessGroup implements Node {
+  createdAt: DateTime!
+  id: ID!
+  members(after: String, before: String, first: Int, last: Int): AccessGroupMembersConnection!
+  name: String!
+  projects(after: String, before: String, first: Int, last: Int): AccessGroupProjectsConnection!
+  role: ProjectRole!
+  source: AccessGroupSource!
+  updatedAt: DateTime!
+  workspace: Workspace!
+  workspaceId: String!
+}
+
+input AccessGroupCreateInput {
+  name: String!
+  role: ProjectRole!
+  workspaceId: String!
+}
+
+type AccessGroupMember implements Node {
+  accessGroup: AccessGroup!
+  accessGroupId: String!
+  createdAt: DateTime!
+  id: ID!
+  updatedAt: DateTime!
+  user: User!
+  userId: String!
+}
+
+input AccessGroupMemberInput {
+  accessGroupId: String!
+  userId: String!
+}
+
+type AccessGroupMembersConnection {
+  edges: [AccessGroupMembersConnectionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AccessGroupMembersConnectionEdge {
+  cursor: String!
+  node: AccessGroupMember!
+}
+
+type AccessGroupProject implements Node {
+  accessGroup: AccessGroup!
+  accessGroupId: String!
+  createdAt: DateTime!
+  id: ID!
+  project: Project!
+  projectId: String!
+  updatedAt: DateTime!
+}
+
+input AccessGroupProjectInput {
+  accessGroupId: String!
+  projectId: String!
+}
+
+type AccessGroupProjectsConnection {
+  edges: [AccessGroupProjectsConnectionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type AccessGroupProjectsConnectionEdge {
+  cursor: String!
+  node: AccessGroupProject!
+}
+
+enum AccessGroupSource {
+  MANUAL
+}
+
+input AccessGroupUpdateInput {
+  name: String
+  role: ProjectRole
+}
+
 type AccessRule {
   disallowed: String
 }
@@ -41,8 +119,6 @@ enum ActivePlatformFlag {
   DEPLOY_SUPERSEDE_ON_PUSH
   DEV_STUDIO
   DEV_STUDIO_ANON_PROVISIONS
-  DOMAIN_PURCHASE_VELOCITY_LIMIT
-  DOMAIN_RADAR_TRIGGER
   DOMAIN_RECONCILE_KILLSWITCH
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
@@ -56,7 +132,6 @@ enum ActivePlatformFlag {
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
-  WORKSPACE_BAN_SINGLE_WRITER
   WORKSPACE_MCP_KILLSWITCH
 }
 
@@ -69,7 +144,6 @@ enum ActiveServiceFeatureFlag {
   ENABLE_DOCKER_EXTENSION
   PLACEHOLDER
   SKIPPED_BUILDS
-  USE_EXPRESS_PACKSTORE
   USE_VM_RUNTIME
 }
 
@@ -484,6 +558,11 @@ type CloudAgentSnapshot {
   lastEventKind: String!
 
   """
+  Truncated most recent prompt of the session, display-only. Null when the harness never reported one.
+  """
+  latestPrompt: String
+
+  """
   Truncated first prompt of the session, display-only. Null when the harness never reported one.
   """
   prompt: String
@@ -504,6 +583,7 @@ type CloudAgentSnapshot {
 input CloudAgentSnapshotInput {
   harness: String!
   lastEventKind: String!
+  latestPrompt: String
   prompt: String
   sessionId: String!
   sessionName: String
@@ -1920,6 +2000,27 @@ type MonitorThresholdConfig {
 }
 
 type Mutation {
+  """Create an access group in a workspace."""
+  accessGroupCreate(input: AccessGroupCreateInput!): AccessGroup!
+
+  """Delete an access group."""
+  accessGroupDelete(id: String!): Boolean!
+
+  """Add a workspace member to an access group."""
+  accessGroupMemberAdd(input: AccessGroupMemberInput!): AccessGroupMember!
+
+  """Remove a member from an access group."""
+  accessGroupMemberRemove(input: AccessGroupMemberInput!): Boolean!
+
+  """Attach a project to an access group."""
+  accessGroupProjectAttach(input: AccessGroupProjectInput!): AccessGroupProject!
+
+  """Detach a project from an access group."""
+  accessGroupProjectDetach(input: AccessGroupProjectInput!): Boolean!
+
+  """Update an access group's name or role."""
+  accessGroupUpdate(id: String!, input: AccessGroupUpdateInput!): AccessGroup!
+
   """Set agent usage limit for a workspace"""
   agentUsageLimitSet(input: AgentUsageLimitSetInput!): Boolean!
 
@@ -2812,6 +2913,11 @@ type Mutation {
   """Enable or disable a workspace policy. Enterprise workspaces only."""
   workspacePolicyItemUpdate(enabled: Boolean, input: WorkspacePolicyItemUpdateInput, policy: WorkspacePolicyName, workspaceId: String!): Boolean!
 
+  """
+  Control whether non-admin project visibility is restricted to access groups and direct project permissions.
+  """
+  workspaceSetRestrictProjectVisibilityToGroups(enabled: Boolean!, workspaceId: String!): Boolean!
+
   """Enable or disable 2FA enforcement for a workspace"""
   workspaceTwoFactorEnforcementUpdate(enabled: Boolean!, workspaceId: String!): Boolean!
 
@@ -3261,8 +3367,6 @@ enum PlatformFeatureFlag {
   DEPLOY_SUPERSEDE_ON_PUSH
   DEV_STUDIO
   DEV_STUDIO_ANON_PROVISIONS
-  DOMAIN_PURCHASE_VELOCITY_LIMIT
-  DOMAIN_RADAR_TRIGGER
   DOMAIN_RECONCILE_KILLSWITCH
   IN_DASHBOARD_SUPPORT
   KAFKA_EPHEMERAL_ENVIRONMENT_UPDATES
@@ -3276,7 +3380,6 @@ enum PlatformFeatureFlag {
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
-  WORKSPACE_BAN_SINGLE_WRITER
   WORKSPACE_MCP_KILLSWITCH
 }
 
@@ -3945,11 +4048,6 @@ type Query {
     limit: Int
     startDate: DateTime
   ): [Log!]!
-
-  """
-  Shell and exec sessions running on this deployment's VM that you can reconnect to. Null if the deployment has no running VM.
-  """
-  deploymentSessions(after: String, before: String, deploymentId: String!, first: Int, last: Int): QueryDeploymentSessionsConnection
 
   """Find a single DeploymentSnapshot"""
   deploymentSnapshot(deploymentId: String!): DeploymentSnapshot
@@ -4658,6 +4756,19 @@ type Query {
 
   """Get all templates for a workspace."""
   workspaceTemplates(after: String, before: String, first: Int, last: Int, workspaceId: String!): QueryWorkspaceTemplatesConnection!
+
+  """
+  Workspace-wide SUM of the same UI usage rollup as `usage` grouped by project. Use this for the usage-page header so it does not wait on per-project rows. Deleted projects that still bill are included when `includeDeleted` is true.
+  """
+  workspaceUsageTotals(
+    endDate: DateTime
+
+    """Whether to include deleted projects in the usage."""
+    includeDeleted: Boolean
+    measurements: [MetricMeasurement!]!
+    startDate: DateTime
+    workspaceId: String
+  ): [AggregatedUsage!]!
 }
 
 type QueryApiTokensConnection {
@@ -4708,16 +4819,6 @@ type QueryDeploymentInstanceExecutionsConnection {
 type QueryDeploymentInstanceExecutionsConnectionEdge {
   cursor: String!
   node: DeploymentInstanceExecution!
-}
-
-type QueryDeploymentSessionsConnection {
-  edges: [QueryDeploymentSessionsConnectionEdge!]!
-  pageInfo: PageInfo!
-}
-
-type QueryDeploymentSessionsConnectionEdge {
-  cursor: String!
-  node: SandboxSession!
 }
 
 type QueryDeploymentTriggersConnection {
@@ -5334,8 +5435,6 @@ enum SandboxTemplateBuildStatus {
 }
 
 input SandboxTemplateInput {
-  baseImageDigest: String
-
   """
   Build a template by running these shell instructions on the base image. Mutually exclusive with name.
   """
@@ -6806,6 +6905,7 @@ enum WorkflowStatus {
 }
 
 type Workspace implements Node {
+  accessGroups(after: String, before: String, first: Int, last: Int): WorkspaceAccessGroupsConnection!
   adoptionHistory: [AdoptionInfo!]!
   adoptionLevel: Float!
   allowDeprecatedRegions: Boolean @deprecated(reason: "Deprecated regions are no longer supported.")
@@ -6849,6 +6949,7 @@ type Workspace implements Node {
   """
   redactedDueTo2FAPending: Boolean!
   referredUsers: [ReferralUser!]!
+  restrictProjectVisibilityToGroups: Boolean!
   slackChannelId: String
   subscriptionModel: SubscriptionModel! @deprecated(reason: "Use plan field instead")
   subscriptionPlanLimit: SubscriptionPlanLimit
@@ -6860,6 +6961,16 @@ type Workspace implements Node {
   Get a list of user emails in the workspace who do not have verified 2FA enabled. Returns an empty array if all users have 2FA enabled.
   """
   usersWithout2FA: [String!]!
+}
+
+type WorkspaceAccessGroupsConnection {
+  edges: [WorkspaceAccessGroupsConnectionEdge!]!
+  pageInfo: PageInfo!
+}
+
+type WorkspaceAccessGroupsConnectionEdge {
+  cursor: String!
+  node: AccessGroup!
 }
 
 type WorkspaceIdPConnection {
