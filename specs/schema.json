@@ -983,12 +983,6 @@
             "deprecationReason": null
           },
           {
-            "name": "HA_FOR_MYSQL",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "IN_DASHBOARD_SUPPORT",
             "description": null,
             "isDeprecated": false,
@@ -1205,6 +1199,12 @@
           },
           {
             "name": "STRIPE_AUTOMATIC_TAX",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STRIPE_AUTOMATIC_TAX_DOMAINS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -29585,6 +29585,12 @@
             "deprecationReason": null
           },
           {
+            "name": "STRIPE_AUTOMATIC_TAX_DOMAINS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "STRIPE_METERS_NEW_ACCOUNTS",
             "description": null,
             "isDeprecated": false,
@@ -49454,6 +49460,22 @@
             "deprecationReason": null
           },
           {
+            "name": "hasEverDeployed",
+            "description": "Whether any deployment was ever created for this service instance, including deployments that have since been removed. Distinguishes a service that was torn down (all deployments removed) from one that has never deployed — latestDeployment and activeDeployments are null/empty for both.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "healthcheckPath",
             "description": null,
             "args": [],
@@ -58119,18 +58141,6 @@
             "deprecationReason": null
           },
           {
-            "name": "customerId",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "id",
             "description": null,
             "args": [],
@@ -58142,18 +58152,6 @@
                 "name": "String",
                 "ofType": null
               }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "isTrialing",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -58266,18 +58264,6 @@
             },
             "isDeprecated": true,
             "deprecationReason": "There are no personal templates anymore, they all belong to a workspace"
-          },
-          {
-            "name": "state",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
           },
           {
             "name": "totalDeploys",

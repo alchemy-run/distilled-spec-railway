@@ -90,7 +90,6 @@ enum ActiveFeatureFlag {
   CLOUD_AGENT_CHAT
   DEBUG_SMART_DIAGNOSIS
   HA_FOR_ALL_TEMPLATES
-  HA_FOR_MYSQL
   IN_DASHBOARD_SUPPORT
   MAGIC_CONFIG
   MYSQL_PITR
@@ -129,6 +128,7 @@ enum ActivePlatformFlag {
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
   STRIPE_AUTOMATIC_TAX
+  STRIPE_AUTOMATIC_TAX_DOMAINS
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
@@ -3377,6 +3377,7 @@ enum PlatformFeatureFlag {
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
   STRIPE_AUTOMATIC_TAX
+  STRIPE_AUTOMATIC_TAX_DOMAINS
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
   UPDATED_VM_QUERIES
@@ -5600,6 +5601,11 @@ type ServiceInstance implements Node {
   drainingSeconds: Int
   edgeConfig: EdgeConfig
   environmentId: String!
+
+  """
+  Whether any deployment was ever created for this service instance, including deployments that have since been removed. Distinguishes a service that was torn down (all deployments removed) from one that has never deployed — latestDeployment and activeDeployments are null/empty for both.
+  """
+  hasEverDeployed: Boolean!
   healthcheckPath: String
   healthcheckTimeout: Int
   id: ID!
@@ -6592,16 +6598,13 @@ type UserProfile {
 type UserProfileResponse {
   avatar: String
   createdAt: DateTime!
-  customerId: String
   id: String!
-  isTrialing: Boolean
   name: String
   profile: UserProfile!
 
   """Gets all public projects for a user."""
   publicProjects(after: String, before: String, first: Int, last: Int): UserProfileResponsePublicProjectsConnection!
   publishedTemplates: [SimilarTemplate!]! @deprecated(reason: "There are no personal templates anymore, they all belong to a workspace")
-  state: String
   totalDeploys: Int!
   username: String
 }
