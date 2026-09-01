@@ -2626,12 +2626,12 @@ type Mutation {
   ): Boolean!
 
   """
-  Dismiss a platform-armed Postgres security update notice and stand down the scheduled redeploy
+  Dismiss a platform-armed database security update notice and stand down the scheduled redeploy
   """
   serviceInstanceVulnRemediationDismiss(environmentId: String!, serviceId: String!): Boolean!
 
   """
-  Immediately apply a platform-armed Postgres security update (backup + redeploy). Returns the new deployment id.
+  Immediately apply a platform-armed database security update (backup + redeploy). Returns the new deployment id.
   """
   serviceInstanceVulnRemediationPatchNow(environmentId: String!, serviceId: String!): String!
 

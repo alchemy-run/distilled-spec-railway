@@ -22882,7 +22882,7 @@
           },
           {
             "name": "serviceInstanceVulnRemediationDismiss",
-            "description": "Dismiss a platform-armed Postgres security update notice and stand down the scheduled redeploy",
+            "description": "Dismiss a platform-armed database security update notice and stand down the scheduled redeploy",
             "args": [
               {
                 "name": "environmentId",
@@ -22927,7 +22927,7 @@
           },
           {
             "name": "serviceInstanceVulnRemediationPatchNow",
-            "description": "Immediately apply a platform-armed Postgres security update (backup + redeploy). Returns the new deployment id.",
+            "description": "Immediately apply a platform-armed database security update (backup + redeploy). Returns the new deployment id.",
             "args": [
               {
                 "name": "environmentId",
