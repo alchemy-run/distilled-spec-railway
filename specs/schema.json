@@ -1030,6 +1030,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AGENT_USAGE_CH_INGEST",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "AGENT_USAGE_WARNINGS",
             "description": null,
             "isDeprecated": false,
@@ -1211,6 +1217,12 @@
           },
           {
             "name": "VM_COUPON_MIGRATION",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VM_USAGE_CH_INGEST",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -30028,6 +30040,12 @@
         "interfaces": null,
         "enumValues": [
           {
+            "name": "AGENT_USAGE_CH_INGEST",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "AGENT_USAGE_WARNINGS",
             "description": null,
             "isDeprecated": false,
@@ -30209,6 +30227,12 @@
           },
           {
             "name": "VM_COUPON_MIGRATION",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "VM_USAGE_CH_INGEST",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
