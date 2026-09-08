@@ -1567,7 +1567,6 @@ type ExternalWorkspace {
   projects: [Project!]!
   redactedDueTo2FAPending: Boolean!
   subscriptionPlanLimit: SubscriptionPlanLimit
-  supportTierOverride: String
   teamId: String
 }
 
@@ -6541,11 +6540,6 @@ enum SubscriptionState {
 "\nSupport Health Metrics for Template Support Bonus Calculation..\nContains metrics calculated from community support thread performance:\n- solved: Percentage (0-100) of solved threads\n- csat: Percentage (0-100) of threads with positive customer satisfaction\n- aggregateHealth: Average of solved and csat when both available, otherwise just solved percentage\nTemplates with aggregateHealth >= 80 qualify for support bonus (additional 10% kickback).\n"
 scalar SupportHealthMetrics
 
-enum SupportTierOverride {
-  BUSINESS_CLASS
-  BUSINESS_CLASS_TRIAL
-}
-
 type TCPProxy {
   applicationPort: Int!
   createdAt: DateTime
@@ -6587,7 +6581,6 @@ type Team implements Node {
   preferredRegion: String @deprecated(reason: "Use workspace object instead")
   projects(after: String, before: String, first: Int, last: Int): TeamProjectsConnection! @deprecated(reason: "Use workspace object instead")
   slackChannelId: String @deprecated(reason: "Use workspace object instead")
-  supportTierOverride: SupportTierOverride @deprecated(reason: "Use workspace object instead")
   teamPermissions: [TeamPermission!]! @deprecated(reason: "Use workspace object instead")
   updatedAt: DateTime! @deprecated(reason: "Use workspace object instead")
   workspace: Workspace! @deprecated(reason: "Use workspace object instead")
@@ -7359,7 +7352,6 @@ type Workspace implements Node {
   slackChannelId: String
   subscriptionModel: SubscriptionModel! @deprecated(reason: "Use plan field instead")
   subscriptionPlanLimit: SubscriptionPlanLimit
-  supportTierOverride: SupportTierOverride
   team: Team @deprecated(reason: "Teams are being removed from the system, don't use it")
   updatedAt: DateTime!
 

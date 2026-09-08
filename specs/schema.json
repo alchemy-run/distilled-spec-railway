@@ -13413,18 +13413,6 @@
             "deprecationReason": null
           },
           {
-            "name": "supportTierOverride",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "teamId",
             "description": null,
             "args": [],
@@ -56616,29 +56604,6 @@
         "possibleTypes": null
       },
       {
-        "kind": "ENUM",
-        "name": "SupportTierOverride",
-        "description": null,
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": [
-          {
-            "name": "BUSINESS_CLASS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "BUSINESS_CLASS_TRIAL",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "possibleTypes": null
-      },
-      {
         "kind": "OBJECT",
         "name": "TCPProxy",
         "description": null,
@@ -57130,18 +57095,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": true,
-            "deprecationReason": "Use workspace object instead"
-          },
-          {
-            "name": "supportTierOverride",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "ENUM",
-              "name": "SupportTierOverride",
               "ofType": null
             },
             "isDeprecated": true,
@@ -64521,18 +64474,6 @@
             "type": {
               "kind": "SCALAR",
               "name": "SubscriptionPlanLimit",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "supportTierOverride",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "ENUM",
-              "name": "SupportTierOverride",
               "ofType": null
             },
             "isDeprecated": false,
