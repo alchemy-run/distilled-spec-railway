@@ -935,6 +935,12 @@
             "deprecationReason": null
           },
           {
+            "name": "AGENT_BOOTSTRAPS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "AGENT_BYOK",
             "description": null,
             "isDeprecated": false,
@@ -1180,6 +1186,18 @@
             "deprecationReason": null
           },
           {
+            "name": "NUDGE_PUBLIC_DB_URL_WITHIN_PROJECT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NUDGE_RESUBSCRIBE_AFTER_DEAD_INVOICE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "OAUTH_DCR_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
@@ -1222,6 +1240,12 @@
             "deprecationReason": null
           },
           {
+            "name": "SSH_ANON_PROVISIONING",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "STRIPE_METERS_NEW_ACCOUNTS",
             "description": null,
             "isDeprecated": false,
@@ -1241,6 +1265,12 @@
           },
           {
             "name": "UPDATED_VM_QUERIES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "USAGE_CH_READS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -4875,6 +4905,18 @@
                 "name": "Boolean",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "title",
+            "description": "Generated display title for the session, display-only. Null until generated; fall back to latestPrompt, then prompt.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -30706,6 +30748,18 @@
             "deprecationReason": null
           },
           {
+            "name": "NUDGE_PUBLIC_DB_URL_WITHIN_PROJECT",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "NUDGE_RESUBSCRIBE_AFTER_DEAD_INVOICE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "OAUTH_DCR_KILLSWITCH",
             "description": null,
             "isDeprecated": false,
@@ -30748,6 +30802,12 @@
             "deprecationReason": null
           },
           {
+            "name": "SSH_ANON_PROVISIONING",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "STRIPE_METERS_NEW_ACCOUNTS",
             "description": null,
             "isDeprecated": false,
@@ -30767,6 +30827,12 @@
           },
           {
             "name": "UPDATED_VM_QUERIES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "USAGE_CH_READS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
