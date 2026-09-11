@@ -1258,12 +1258,6 @@
             "deprecationReason": null
           },
           {
-            "name": "UNIFIED_TOKENS_AUTHORIZATION_SHADOW",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "UPDATED_VM_QUERIES",
             "description": null,
             "isDeprecated": false,
@@ -4290,7 +4284,7 @@
         "fields": [
           {
             "name": "agentWsUrl",
-            "description": "WebSocket endpoint of the in-VM harness gate, for the dashboard chat. Survives sleep: the domain is stable across sleep and wake, and the observation keeps it. Null only on agents created before the gate existed, or before their first observation lands.",
+            "description": "WebSocket endpoint of the in-VM harness gate, for the dashboard chat. Survives sleep: the domain is stable across sleep and wake. Prefers the machine observation; when that carries no gate domain it falls back to the domain network-cp actively serves, so an agent whose observation lagged still offers chat. Null on agents created before the gate existed, or asleep/absent machines.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4330,7 +4324,7 @@
           },
           {
             "name": "domain",
-            "description": "The first of the agent machine's public domains. Stable across sleep and wake; returns no endpoints while the machine sleeps.",
+            "description": "The agent machine's public HTTP domain (port 8080) — the live preview. Prefers the observation (falling back to the first declared domain when 8080 was never requested); when the observation carries no domains it falls back to the domain network-cp actively serves on 8080, so a preview shows even when the observation lagged. Returns null while the machine sleeps.",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -4644,6 +4638,27 @@
       },
       {
         "kind": "INPUT_OBJECT",
+        "name": "CloudAgentCodeEndpointInput",
+        "description": "Opt-in public code endpoint, provisioned only when creating a cloud agent.",
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "port",
+            "description": "Target port. Defaults to 4096; must be 1024-65535, excluding 8080 and 8790.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
         "name": "CloudAgentCreateInput",
         "description": null,
         "fields": null,
@@ -4654,6 +4669,16 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "codeEndpoint",
+            "description": "Provision a code-* domain. Omit to disable, including when restoring a checkpoint or bootstrap.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "CloudAgentCodeEndpointInput",
               "ofType": null
             },
             "defaultValue": null
@@ -5169,7 +5194,7 @@
           },
           {
             "name": "serviceId",
-            "description": "Resolve the repo from this service's connected source.",
+            "description": "Resolve the repo from this service's source.",
             "type": {
               "kind": "SCALAR",
               "name": "String",
@@ -24192,7 +24217,7 @@
           },
           {
             "name": "sshSignupApprove",
-            "description": "Approve an SSH signup: register the offered SSH key on the authenticated account so the agent is recognized.",
+            "description": "Approve an SSH signup: register the offered SSH key on the authenticated account so the agent is recognized. When the key owns an anonymous trial box, claims that trial into workspaceId and re-owns the key.",
             "args": [
               {
                 "name": "code",
@@ -24205,6 +24230,16 @@
                     "name": "String",
                     "ofType": null
                   }
+                },
+                "defaultValue": null
+              },
+              {
+                "name": "workspaceId",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
                 },
                 "defaultValue": null
               }
@@ -30820,12 +30855,6 @@
             "deprecationReason": null
           },
           {
-            "name": "UNIFIED_TOKENS_AUTHORIZATION_SHADOW",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "UPDATED_VM_QUERIES",
             "description": null,
             "isDeprecated": false,
@@ -34370,6 +34399,30 @@
               "kind": "SCALAR",
               "name": "JSON",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "serviceIds",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "String",
+                    "ofType": null
+                  }
+                }
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -43699,7 +43752,7 @@
           },
           {
             "name": "sshSignupInfo",
-            "description": "Details for an SSH signup confirm page: the SSH key fingerprint to verify before binding it to the account.",
+            "description": "Details for an SSH signup confirm page: the SSH key fingerprint to verify before binding it to the account, and the trial box it owns if any.",
             "args": [
               {
                 "name": "code",
@@ -50169,11 +50222,157 @@
       },
       {
         "kind": "OBJECT",
+        "name": "SSHSignupClaimableWorkspace",
+        "description": null,
+        "fields": [
+          {
+            "name": "id",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "SSHSignupInfo",
         "description": null,
         "fields": [
           {
+            "name": "claimableWorkspaces",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "OBJECT",
+                    "name": "SSHSignupClaimableWorkspace",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "fingerprint",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "trial",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "SSHSignupTrial",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "SSHSignupTrial",
+        "description": "The anonymous trial box the offered SSH key currently owns; approving the signup claims it.",
+        "fields": [
+          {
+            "name": "buildExpiresAt",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "DateTime",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "cloudAgentId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "projectId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "projectName",
             "description": null,
             "args": [],
             "type": {
