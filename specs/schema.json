@@ -1013,12 +1013,6 @@
             "deprecationReason": null
           },
           {
-            "name": "PROJECT_SANDBOXES",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "TEMPLATE_CHAT",
             "description": null,
             "isDeprecated": false,
@@ -1186,6 +1180,12 @@
             "deprecationReason": null
           },
           {
+            "name": "NUDGE_BACKUP_SCHEDULE_MISSING",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "NUDGE_PUBLIC_DB_URL_WITHIN_PROJECT",
             "description": null,
             "isDeprecated": false,
@@ -1246,6 +1246,12 @@
             "deprecationReason": null
           },
           {
+            "name": "STRIPE_INTERACTIVE_SUBSCRIPTION_ON_SESSION",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "STRIPE_METERS_NEW_ACCOUNTS",
             "description": null,
             "isDeprecated": false,
@@ -1253,6 +1259,12 @@
           },
           {
             "name": "STRIPE_METERS_SHADOW_ENABLED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STRIPE_WEBHOOK_DISPUTE_CANCELLATION",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -4400,6 +4412,22 @@
               "ofType": {
                 "kind": "SCALAR",
                 "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "project",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "Project",
                 "ofType": null
               }
             },
@@ -18834,6 +18862,53 @@
             "deprecationReason": null
           },
           {
+            "name": "devNewLandingTargetClear",
+            "description": "Forget the box `ssh dev.new` lands you in; the next connection creates a new one.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "devNewLandingTargetSet",
+            "description": "Make this cloud agent the box `ssh dev.new` lands you in. Replaces any previous choice.",
+            "args": [
+              {
+                "name": "cloudAgentId",
+                "description": null,
+                "type": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                },
+                "defaultValue": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "CloudAgent",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "disablePitrForHaCluster",
             "description": "Disables point-in-time recovery on an HA database cluster with the same rolling rollout as enable. The backup bucket is left intact, so existing backup history is preserved.",
             "args": [
@@ -30783,6 +30858,12 @@
             "deprecationReason": null
           },
           {
+            "name": "NUDGE_BACKUP_SCHEDULE_MISSING",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "NUDGE_PUBLIC_DB_URL_WITHIN_PROJECT",
             "description": null,
             "isDeprecated": false,
@@ -30843,6 +30924,12 @@
             "deprecationReason": null
           },
           {
+            "name": "STRIPE_INTERACTIVE_SUBSCRIPTION_ON_SESSION",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "STRIPE_METERS_NEW_ACCOUNTS",
             "description": null,
             "isDeprecated": false,
@@ -30850,6 +30937,12 @@
           },
           {
             "name": "STRIPE_METERS_SHADOW_ENABLED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "STRIPE_WEBHOOK_DISPUTE_CANCELLATION",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -38563,6 +38656,18 @@
                 "name": "QueryDeploymentsConnection",
                 "ofType": null
               }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "devNewLandingTarget",
+            "description": "The cloud agent `ssh dev.new` lands you in, or null when the next connection will create one.",
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CloudAgent",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -50680,6 +50785,16 @@
             "defaultValue": null
           },
           {
+            "name": "resources",
+            "description": "Creation-time CPU and memory, including for forks and checkpoint restores. Each omitted or null field uses the workspace's sandbox default; explicit values must not exceed its independent VM maximum.",
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "SandboxResourcesInput",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "sourceSandboxId",
             "description": "Fork an existing running sandbox in this environment. Mutually exclusive with template.",
             "type": {
@@ -50920,6 +51035,37 @@
             "deprecationReason": null
           }
         ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "SandboxResourcesInput",
+        "description": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "cpu",
+            "description": "Positive vCPU for the new sandbox; fractional values are supported. Omitted or null uses the workspace's sandbox default. Must not exceed its VM maximum.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "memoryGB",
+            "description": "Memory in decimal GB (1 GB = 1,000,000,000 bytes), rounded to whole bytes. Must be at least 1 byte and at most the workspace's VM maximum. Omitted or null uses its sandbox default.",
+            "type": {
+              "kind": "SCALAR",
+              "name": "Float",
+              "ofType": null
+            },
+            "defaultValue": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
         "possibleTypes": null
       },
       {

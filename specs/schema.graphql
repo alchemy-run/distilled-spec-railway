@@ -95,7 +95,6 @@ enum ActiveFeatureFlag {
   MAGIC_CONFIG
   MYSQL_PITR
   PRIORITY_BOARDING
-  PROJECT_SANDBOXES
   TEMPLATE_CHAT
   USAGE_INSIGHTS
   VM_STORAGE_TRACES
@@ -125,6 +124,7 @@ enum ActivePlatformFlag {
   LOGS_LONG_WINDOW_CHUNKING
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
   NUDGES
+  NUDGE_BACKUP_SCHEDULE_MISSING
   NUDGE_PUBLIC_DB_URL_WITHIN_PROJECT
   NUDGE_RESUBSCRIBE_AFTER_DEAD_INVOICE
   OAUTH_DCR_KILLSWITCH
@@ -135,8 +135,10 @@ enum ActivePlatformFlag {
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
   SSH_ANON_PROVISIONING
+  STRIPE_INTERACTIVE_SUBSCRIPTION_ON_SESSION
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  STRIPE_WEBHOOK_DISPUTE_CANCELLATION
   UPDATED_VM_QUERIES
   USAGE_CH_READS
   VM_COUPON_MIGRATION
@@ -520,6 +522,7 @@ type CloudAgent {
   environmentId: String!
   id: ID!
   name: String!
+  project: Project!
   projectId: String!
 
   """
@@ -2247,6 +2250,16 @@ type Mutation {
   deploymentTriggerUpdate(id: String!, input: DeploymentTriggerUpdateInput!): DeploymentTrigger!
 
   """
+  Forget the box `ssh dev.new` lands you in; the next connection creates a new one.
+  """
+  devNewLandingTargetClear: Boolean!
+
+  """
+  Make this cloud agent the box `ssh dev.new` lands you in. Replaces any previous choice.
+  """
+  devNewLandingTargetSet(cloudAgentId: ID!): CloudAgent!
+
+  """
   Disables point-in-time recovery on an HA database cluster with the same rolling rollout as enable. The backup bucket is left intact, so existing backup history is preserved.
   """
   disablePitrForHaCluster(input: DisablePitrForHaClusterInput!): TemplateDeployPayload!
@@ -3545,6 +3558,7 @@ enum PlatformFeatureFlag {
   LOGS_LONG_WINDOW_CHUNKING
   NEW_STRIPE_WEBHOOK_VERSION_ROLLOUT
   NUDGES
+  NUDGE_BACKUP_SCHEDULE_MISSING
   NUDGE_PUBLIC_DB_URL_WITHIN_PROJECT
   NUDGE_RESUBSCRIBE_AFTER_DEAD_INVOICE
   OAUTH_DCR_KILLSWITCH
@@ -3555,8 +3569,10 @@ enum PlatformFeatureFlag {
   SERVICEINSTANCE_DATALOADER_FOR_STATIC_URL
   SPLIT_USAGE_QUERIES
   SSH_ANON_PROVISIONING
+  STRIPE_INTERACTIVE_SUBSCRIPTION_ON_SESSION
   STRIPE_METERS_NEW_ACCOUNTS
   STRIPE_METERS_SHADOW_ENABLED
+  STRIPE_WEBHOOK_DISPUTE_CANCELLATION
   UPDATED_VM_QUERIES
   USAGE_CH_READS
   VM_COUPON_MIGRATION
@@ -4317,6 +4333,11 @@ type Query {
 
   """Get all deployments"""
   deployments(after: String, before: String, first: Int, input: DeploymentListInput!, last: Int): QueryDeploymentsConnection!
+
+  """
+  The cloud agent `ssh dev.new` lands you in, or null when the next connection will create one.
+  """
+  devNewLandingTarget: CloudAgent
 
   """Fetch individual DNS query logs for an environment"""
   dnsQueryLogs(
@@ -5763,6 +5784,11 @@ input SandboxCreateInput {
   region: String
 
   """
+  Creation-time CPU and memory, including for forks and checkpoint restores. Each omitted or null field uses the workspace's sandbox default; explicit values must not exceed its independent VM maximum.
+  """
+  resources: SandboxResourcesInput
+
+  """
   Fork an existing running sandbox in this environment. Mutually exclusive with template.
   """
   sourceSandboxId: String
@@ -5813,6 +5839,18 @@ enum SandboxNetworkIsolation {
 
   """Joins the environment's private network."""
   PRIVATE
+}
+
+input SandboxResourcesInput {
+  """
+  Positive vCPU for the new sandbox; fractional values are supported. Omitted or null uses the workspace's sandbox default. Must not exceed its VM maximum.
+  """
+  cpu: Float
+
+  """
+  Memory in decimal GB (1 GB = 1,000,000,000 bytes), rounded to whole bytes. Must be at least 1 byte and at most the workspace's VM maximum. Omitted or null uses its sandbox default.
+  """
+  memoryGB: Float
 }
 
 """
