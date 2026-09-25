@@ -1025,12 +1025,6 @@
             "deprecationReason": null
           },
           {
-            "name": "DEBUG_SMART_DIAGNOSIS",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "EMAIL_FORWARDING",
             "description": null,
             "isDeprecated": false,
@@ -1283,18 +1277,6 @@
           },
           {
             "name": "OAUTH_DCR_KILLSWITCH",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ORCHESTRATOR_ARCHIVE_UPLOAD",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ORCHESTRATOR_BUILD_SERVICE_RPC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -32445,18 +32427,6 @@
           },
           {
             "name": "OAUTH_DCR_KILLSWITCH",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ORCHESTRATOR_ARCHIVE_UPLOAD",
-            "description": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "ORCHESTRATOR_BUILD_SERVICE_RPC",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
