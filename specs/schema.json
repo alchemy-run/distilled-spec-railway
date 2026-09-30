@@ -1108,6 +1108,12 @@
             "deprecationReason": null
           },
           {
+            "name": "BLOCK_TRIAL_RESTRICTION_APPEALS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "BUILDER_V4_ROLLOUT",
             "description": null,
             "isDeprecated": false,
@@ -1289,6 +1295,12 @@
           },
           {
             "name": "PROJECT_HISTORY_DUAL_WRITE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "RADAR_HTTP_PATTERN_DETECTION",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -32371,6 +32383,12 @@
             "deprecationReason": null
           },
           {
+            "name": "BLOCK_TRIAL_RESTRICTION_APPEALS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "BUILDER_V4_ROLLOUT",
             "description": null,
             "isDeprecated": false,
@@ -32552,6 +32570,12 @@
           },
           {
             "name": "PROJECT_HISTORY_DUAL_WRITE",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "RADAR_HTTP_PATTERN_DETECTION",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
